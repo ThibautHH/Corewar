@@ -40,7 +40,7 @@ SRC_TEST	:=	$(addprefix $(DIR_TEST),\
 
 DIR_BUILD	:=	../build/
 
-ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/)
+ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/lib/)
 DIR_OBJ		:=	$(addprefix $(ROOT_OBJ), $(DIR))
 OBJ			:=	$(patsubst %.c, $(ROOT_OBJ)%.o, $(SRC))
 
@@ -54,7 +54,7 @@ CLINKER		:=	ar rc
 CFLAGS		:=	-I../include/ -Wall -Wextra
 
 DEBUG		:=	-g
-D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/)
+D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/lib/)
 D_OBJ		:=	$(patsubst %.c, $(D_ROOT_OBJ)%.o, $(SRC))
 DIR_OBJ		+=	$(addprefix $(D_ROOT_OBJ), $(DIR))
 

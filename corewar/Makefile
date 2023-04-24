@@ -22,7 +22,7 @@ SRC_TEST	:=	$(addprefix $(DIR_TEST),\
 
 DIR_BUILD	:=	../build/
 
-ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/)
+ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/$(NAME)/)
 DIR_OBJ		:=	$(addprefix $(ROOT_OBJ), $(DIR))
 OBJ			:=	$(patsubst %.c, $(ROOT_OBJ)%.o, $(SRC))
 
@@ -37,7 +37,7 @@ LDFLAGS		:=	-L$(LIB)
 LDLIBS		:=	-lice
 
 DEBUG		:=	-g
-D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/)
+D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/$(NAME)/)
 D_OBJ		:=	$(patsubst %.c, $(D_ROOT_OBJ)%.o, $(SRC))
 DIR_OBJ		+=	$(addprefix $(D_ROOT_OBJ), $(DIR))
 
