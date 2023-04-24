@@ -16,15 +16,16 @@ all:
 		$(MAKE) $$i;\
 	done
 
-$(UNIT_TEST):
-	@for i in $(SRC); do\
-		$(MAKE) $$i $(UNIT_TEST);\
-	done
-
 debug:
 	@for i in $(SRC); do\
 		$(MAKE) $$i debug;\
 	done
+
+$(UNIT_TEST):
+	@$(MAKE) ./lib/ $@
+
+tests_run:
+	@$(MAKE) ./lib/ $@
 
 clean:
 	@for i in $(SRC); do\

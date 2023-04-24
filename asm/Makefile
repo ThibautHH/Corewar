@@ -16,10 +16,6 @@ SRC			:=	$(addprefix $(DIR),\
 				main.c				\
 				)
 
-DIR_TEST	:=	./tests/
-SRC_TEST	:=	$(addprefix $(DIR_TEST),\
-				)
-
 DIR_BUILD	:=	../build/
 
 ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/$(NAME)/)
@@ -62,12 +58,6 @@ $(NAME):			$(OBJ)
 	@$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(LDFLAGS) $(LDLIBS)\
 	&& printf "\033[32m[SUCCESS]\033[0m %s\n" $@\
 	|| printf "\033[31m[ERROR]\033[0m %s\n" $@
-
-$(UNIT_TEST):
-	@$(MAKE) $(UNIT_TEST)
-
-tests_run:
-	@$(MAKE) $@
 
 lib:
 	@$(MAKE)
