@@ -32,11 +32,16 @@ RM			:=	rm -rf
 MAKE		:=	make -sC$(LIB) -j
 
 CC			:=	gcc
-CFLAGS		:=	-I./include/ -Wall -Wextra
+CFLAGS		:=	-I../include/ -Wall -Wextra
 LDFLAGS		:=	-L$(LIB)
 LDLIBS		:=	-lice
 
-all:				$(DIR_OBJ) $(NAME)
+DEBUG		:=	-g
+D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/)
+D_OBJ		:=	$(patsubst %.c, $(D_ROOT_OBJ)%.o, $(SRC))
+DIR_OBJ		+=	$(addprefix $(D_ROOT_OBJ), $(DIR))
+
+all:				| $(DIR_OBJ) lib $(NAME)
 
 $(DIR_OBJ):
 	@mkdir -p $(DIR_OBJ)\
@@ -48,8 +53,12 @@ $(ROOT_OBJ)%.o:		%.c
 	&& printf "\033[32m[OK]\033[0m %s\n" $<\
 	|| printf "\033[31m[KO]\033[0m %s\n" $<
 
+$(D_ROOT_OBJ)%.o:		%.c
+	@$(CC) $(CFLAGS) -c $< -o $@\
+	&& printf "\033[32m[OK]\033[0m %s\n" $<\
+	|| printf "\033[31m[KO]\033[0m %s\n" $<
+
 $(NAME):			$(OBJ)
-	@$(MAKE)
 	@$(CC) -o $(NAME) $(OBJ) $(CFLAGS) $(LDFLAGS) $(LDLIBS)\
 	&& printf "\033[32m[SUCCESS]\033[0m %s\n" $@\
 	|| printf "\033[31m[ERROR]\033[0m %s\n" $@
@@ -60,8 +69,16 @@ $(UNIT_TEST):
 tests_run:
 	@$(MAKE) $@
 
-debug:				CFLAGS += -g
-debug:				re
+lib:
+	@$(MAKE)
+
+lib_debug:
+	@make -sC $(LIB) debug
+
+debug:				CFLAGS += $(DEBUG)
+debug:				OBJ := $(D_OBJ)
+debug:				$(command @make -sC $(LIB) debug)
+debug:				| lib_debug $(DIR_OBJ) $(D_OBJ) $(NAME)
 
 clean:
 	@$(MAKE) $@
@@ -77,6 +94,6 @@ fclean:				clean
 
 re:					fclean all
 
-.PHONY:				all clean fclean re $(NAME)
+.PHONY:				all debug clean fclean re $(NAME) $(ROOT_OBJ) $(D_ROOT_OBJ)
 
-.SILENT:			all test_run test_coverage debug clean fclean re
+.SILENT:			all debug clean fclean re $(NAME) $(ROOT_OBJ) $(D_ROOT_OBJ)

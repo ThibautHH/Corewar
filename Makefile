@@ -21,6 +21,11 @@ $(UNIT_TEST):
 		$(MAKE) $$i $(UNIT_TEST);\
 	done
 
+debug:
+	@for i in $(SRC); do\
+		$(MAKE) $$i debug;\
+	done
+
 clean:
 	@for i in $(SRC); do\
 		$(MAKE) $$i clean;\

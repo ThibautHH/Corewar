@@ -53,7 +53,12 @@ CC			:=	gcc
 CLINKER		:=	ar rc
 CFLAGS		:=	-I../include/ -Wall -Wextra
 
-all:				$(DIR_OBJ) $(NAME)
+DEBUG		:=	-g
+D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/)
+D_OBJ		:=	$(patsubst %.c, $(D_ROOT_OBJ)%.o, $(SRC))
+DIR_OBJ		+=	$(addprefix $(D_ROOT_OBJ), $(DIR))
+
+all:				| $(DIR_OBJ) $(NAME)
 
 $(DIR_OBJ):
 	@mkdir -p $(DIR_OBJ)\
@@ -61,6 +66,11 @@ $(DIR_OBJ):
 	|| printf "\033[31m[ERROR]\033[0m %s\n" $(DIR_OBJ)
 
 $(ROOT_OBJ)%.o:		%.c
+	@$(CC) $(CFLAGS) -c $< -o $@\
+	&& printf "\033[32m[OK]\033[0m %s\n" $<\
+	|| printf "\033[31m[KO]\033[0m %s\n" $<
+
+$(D_ROOT_OBJ)%.o:		%.c
 	@$(CC) $(CFLAGS) -c $< -o $@\
 	&& printf "\033[32m[OK]\033[0m %s\n" $<\
 	|| printf "\033[31m[KO]\033[0m %s\n" $<
@@ -81,8 +91,9 @@ tests_run:			$(UNIT_TEST)
 	@./$(TEST_DIR)$(UNIT_TEST)
 	gcovr $(TEST_DIR) --exclude tests/
 
-debug:				CFLAGS += -g
-debug:				re
+debug:				CFLAGS += $(DEBUG)
+debug:				OBJ := $(D_OBJ)
+debug:				| $(DIR_OBJ) $(D_OBJ) $(NAME)
 
 clean:
 	@[ -d $(DIR_BUILD) ]\
@@ -96,4 +107,6 @@ fclean:				clean
 
 re:					fclean all
 
-.PHONY:				all clean fclean re
+.PHONY:				all debug clean fclean re $(NAME) $(ROOT_OBJ) $(D_ROOT_OBJ)
+
+.SILENT:			all debug clean fclean re $(NAME) $(ROOT_OBJ) $(D_ROOT_OBJ)
