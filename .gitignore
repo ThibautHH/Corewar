@@ -6,8 +6,11 @@
 ##
 
 # Ide folder
-.vscode
-.idea
+.vscode/
+.idea/
+
+# Build folder
+build/
 
 # Binary files & executables
 *.out
