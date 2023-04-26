@@ -5,6 +5,13 @@
 ## .gitignore
 ##
 
+# Ide folder
+.vscode/
+.idea/
+
+# Build folder
+build/
+
 # Binary files & executables
 *.out
 *.a
