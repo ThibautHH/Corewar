@@ -4,7 +4,7 @@ on:
   pull_request:
     types: [review_requested]
 env:
-  MIRROR_URL: 'git@github.com:EpitechPromo2027/B-CPE-200-REN-2-1-corewar-thibaut.hebert-henriette'
+  MIRROR_URL: 'git@github.com:EpitechPromo2027/B-CPE-200-REN-2-1-corewar-thibaut.hebert-henriette.git'
   EXECUTABLES: 'asm/asm,corewar/corewar'
 jobs:
   check_coding_style:
