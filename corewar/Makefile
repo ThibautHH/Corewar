@@ -12,8 +12,13 @@ LIB			:=	../lib/
 DIR_SRC		:=	src/
 
 DIR			:=	$(DIR_SRC)
-SRC			:=	$(addprefix $(DIR),\
-				main.c				\
+SRC			:=	$(addprefix $(DIR),		\
+				main.c					\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), ./parsing/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				parse_args.c			\
 				)
 
 DIR_BUILD	:=	../build/

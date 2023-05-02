@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "ice/string.h"
 #include "ice/printf.h"
+#include <malloc.h>
 #include "corewar/corewar.h"
 
 static const char *help_message =
@@ -26,9 +27,19 @@ static const char *help_message =
 
 int main(int ac, char **av)
 {
-    FILE *file;
+    corewar_t *corewar = malloc(sizeof(corewar_t));
 
-    if (ac == 2 && (!ice_strcmp(av[1], "-h") || !ice_strcmp(av[1], "--help")))
+    if (ac == 2
+        && (!ice_strcmp(av[1], "-h") || !ice_strcmp(av[1], "--help"))) {
         ice_printf("%s", help_message);
+        return 0;
+    } else if (ac < 2) {
+        ice_printf("Usage: %s [-h | --help]\n", av[0]);
+        return 84;
+    }
+    if (parse_arg(corewar, ac, av)) {
+        ice_printf("Invalid argument, use -h or --help for more information\n");
+        return 84;
+    }
     return 0;
 }
