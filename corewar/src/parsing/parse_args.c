@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "ice/string.h"
 #include "ice/int.h"
+#include "ice/printf.h"
 #include "corewar/corewar.h"
 
 static int check_if_args_aberations(int ac, char **av)
@@ -26,9 +27,27 @@ static int check_if_args_aberations(int ac, char **av)
     return 0;
 }
 
+static int check_if_args_files(int ac, char **av)
+{
+    for (int i = 1; i < ac; i++) {
+        if (!ice_strcmp(av[i], "-dump") || !ice_strcmp(av[i], "-n")
+            || !ice_strcmp(av[i], "-a")) {
+            i += (i + 1 < ac) ? 1 : 0;
+            continue;
+        }
+        FILE *file = fopen(av[i], "r");
+        if (!file) {
+            ice_printf("Invalid file: %s\n", av[i]);
+            return 1;
+        }
+        fclose(file);
+    }
+    return 0;
+}
+
 int parse_arg(corewar_t *corewar, int ac, char **av)
 {
-    if (check_if_args_aberations(ac, av))
+    if (check_if_args_aberations(ac, av) || check_if_args_files(ac, av))
         return 1;
     for (int i = 1; i < ac; i++) {
         if (!ice_strcmp(av[i], "-dump")) {

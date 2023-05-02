@@ -27,7 +27,7 @@ static const char *help_message =
 
 int main(int ac, char **av)
 {
-    corewar_t *corewar = malloc(sizeof(corewar_t));
+    corewar_t *corewar;
 
     if (ac == 2
         && (!ice_strcmp(av[1], "-h") || !ice_strcmp(av[1], "--help"))) {
@@ -37,8 +37,10 @@ int main(int ac, char **av)
         ice_printf("Usage: %s [-h | --help]\n", av[0]);
         return 84;
     }
+    corewar = malloc(sizeof(corewar_t));
     if (parse_arg(corewar, ac, av)) {
         ice_printf("Invalid argument, use -h or --help for more information\n");
+        free(corewar);
         return 84;
     }
     return 0;
