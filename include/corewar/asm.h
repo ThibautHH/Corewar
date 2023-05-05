@@ -43,15 +43,15 @@ typedef struct token_s {
     #define P_TOKEN (token->str)
     #define P_LEN (token->len)
 
-typedef struct parse_s {
+typedef struct parser_s {
     list_t *op;
     list_t *label;
     uint32_t count;
-} parse_t;
+} parser_t;
 
-    #define L_OP (parse->op)
-    #define L_LABEL (parse->label)
-    #define T_COUNT (parse->count)
+    #define L_OP (parser->op)
+    #define L_LABEL (parser->label)
+    #define T_COUNT (parser->count)
 
 //
 // ASM
@@ -76,11 +76,10 @@ bool asm_f(char *file_path);
  *
  * @param header The header
  * @param filepath The file path
- * @return char** The file content
  */
-char **lexer(header_t **header, char *filepath);
+parser_t *lexer(header_t **header, char *filepath);
 
-void destroy_lexer(char *file, void *head, parse_t *parse);
+void destroy_lexer(char *file, void *head);
 
 //
 // Token
@@ -115,34 +114,35 @@ uint32_t token_get_len(const char *str);
 header_t *create_header(char ***lines);
 
 //
-// Parse
+// Parser
 //
 
-parse_t *create_parse(void);
+parser_t *create_parser(void);
+
+void destroy_parser(parser_t *parser);
 
 //
 // Extract
 //
 
-parse_t *extract(char **lines);
+parser_t *extract(char **lines);
 
 //
 // Label
 //
 
-bool create_label(parse_t *parse, token_t *token);
+bool create_label(parser_t *parser, token_t *token);
 
 //
 // Operator
 //
 
-bool create_operator(parse_t *parse, token_t *token,
-    precoded_op_t **current_op);
+bool create_operator(token_t *token, precoded_op_t **current_op);
 
 //
 // Display
 //
 
-void display_token(parse_t *parse);
+void display_token(parser_t *parser);
 
 #endif /* !COREWAR_ASM_H */

@@ -11,7 +11,7 @@
 #include "ice/memory.h"
 #include "corewar/asm.h"
 
-bool create_operator(parse_t *parse, token_t *token, precoded_op_t **current_op)
+bool create_operator(token_t *token, precoded_op_t **current_op)
 {
     *current_op = ice_calloc(1, sizeof(precoded_op_t));
     if (!(*current_op))

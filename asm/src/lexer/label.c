@@ -30,7 +30,7 @@ static bool label_is_valid(char *label)
     return is_char_valid(label[++i], SKIPPED_CHARS);
 }
 
-bool create_label(parse_t *parse, token_t *token)
+bool create_label(parser_t *parser, token_t *token)
 {
     precoded_label_t *label = label_is_valid(P_TOKEN) ?
         malloc(sizeof(precoded_label_t)) : NULL;

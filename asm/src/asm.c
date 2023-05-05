@@ -12,8 +12,9 @@
 bool asm_f(char *file_path)
 {
     header_t *header;
-    char **tokens = lexer(&header, file_path);
+    parser_t *parser = lexer(&header, file_path);
 
     free(header);
-    return (tokens) ? true : false;
+    destroy_parser(parser);
+    return (parser) ? true : false;
 }

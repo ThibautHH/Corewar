@@ -21,7 +21,7 @@ static void display_label(list_node_t **n_label , precoded_label_t **label,
     }
 }
 
-void display_token(parse_t *parse)
+void display_token(parser_t *parser)
 {
     uint32_t count = 0;
     precoded_op_t *op;

@@ -24,7 +24,7 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				token.c				\
 				extract.c			\
 				create_header.c		\
-				create_parse.c		\
+				parser.c			\
 				label.c				\
 				operator.c			\
 				display_token.c		\

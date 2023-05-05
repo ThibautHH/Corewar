@@ -26,7 +26,7 @@ static bool as_separator(precoded_op_t *current_op, token_t *token)
     return false;
 }
 
-static bool handle_token(parse_t *parse, token_t *token)
+static bool handle_token(parser_t *parser, token_t *token)
 {
     static precoded_op_t *current_op = NULL;
 
@@ -41,15 +41,15 @@ static bool handle_token(parse_t *parse, token_t *token)
         }
         return true;
     }
-    return (P_TOKEN[P_LEN - 1] == LABEL_CHAR) ? create_label(parse, token) :
-        create_operator(parse, token, &current_op);
+    return (P_TOKEN[P_LEN - 1] == LABEL_CHAR) ? create_label(parser, token) :
+        create_operator(token, &current_op);
 }
 
-parse_t *extract(char **lines)
+parser_t *extract(char **lines)
 {
-    parse_t *parse = create_parse();
+    parser_t *parser = create_parser();
 
-    if (!parse)
+    if (!parser)
         return NULL;
     for (token_t token = (token_t){*lines, 0}; TOKEN; TOKEN = *(lines++)) {
         for (; TOKEN[0] && TOKEN[0] != COMMENT_CHAR; TOKEN += LEN) {
@@ -57,9 +57,9 @@ parse_t *extract(char **lines)
             LEN = token_get_len(TOKEN);
             if (TOKEN[0] == COMMENT_CHAR || TOKEN[0] == '\0')
                 break;
-            handle_token(parse, &token);
+            handle_token(parser, &token);
             T_COUNT++;
         }
     }
-    return parse;
+    return parser;
 }
