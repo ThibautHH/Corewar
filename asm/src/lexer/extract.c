@@ -5,10 +5,7 @@
 ** extract.c
 */
 
-#include <malloc.h>
-
 #include "ice/string.h"
-#include "ice/memory.h"
 #include "corewar/asm.h"
 
 static bool as_separator(precoded_op_t *current_op, token_t *token)
@@ -48,12 +45,12 @@ static bool handle_token(parse_t *parse, token_t *token)
         create_operator(parse, token, &current_op);
 }
 
-void extract(char **lines)
+parse_t *extract(char **lines)
 {
     parse_t *parse = create_parse();
 
     if (!parse)
-        return;
+        return NULL;
     for (token_t token = (token_t){*lines, 0}; TOKEN; TOKEN = *(lines++)) {
         for (; TOKEN[0] && TOKEN[0] != COMMENT_CHAR; TOKEN += LEN) {
             TOKEN = token_skip_chars(TOKEN);
@@ -64,5 +61,5 @@ void extract(char **lines)
             T_COUNT++;
         }
     }
-    display_token(parse);
+    return parse;
 }

@@ -32,22 +32,19 @@ static char *get_file(char *filepath)
     return content;
 }
 
-static void destroy_lexer(char *file, void *head)
-{
-    ice_free_array(head);
-    free(file);
-}
 
 char **lexer(header_t **header, char *filepath)
 {
     char *file = get_file(filepath);
     char **lines = (file) ? ice_strsplit(file, "\n") : NULL;
     void *head = (lines) ? &lines[0] : NULL;
+    parse_t *parse;
 
     *header = (head) ? create_header(&lines) : NULL;
-    if (!(*header))
+    parse = (*header) ? extract(lines) : NULL;
+    if (!parse)
         return NULL;
-    extract(lines);
-    destroy_lexer(file, head);
+    display_token(parse);
+    destroy_lexer(file, head, parse);
     return NULL;
 }

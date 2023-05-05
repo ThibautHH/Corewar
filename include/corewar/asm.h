@@ -19,7 +19,7 @@
 typedef struct precoded_op_s {
     op_t op;
     uint8_t type;
-    char *args[4];
+    char *args[MAX_ARGS_NUMBER];
     uint8_t arg_count;
 } precoded_op_t;
 
@@ -80,6 +80,8 @@ bool asm_f(char *file_path);
  */
 char **lexer(header_t **header, char *filepath);
 
+void destroy_lexer(char *file, void *head, parse_t *parse);
+
 //
 // Token
 //
@@ -122,7 +124,7 @@ parse_t *create_parse(void);
 // Extract
 //
 
-void extract(char **lines);
+parse_t *extract(char **lines);
 
 //
 // Label
