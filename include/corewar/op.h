@@ -15,11 +15,14 @@
     #define IDX_MOD         512u    /* modulo of the index < */
     #define MAX_ARGS_NUMBER 4u      /* this may not be changed 2^*IND_SIZE */
 
+    #define REG_CHAR       'r'      /* character that indicate a register */
+
     #define COMMENT_CHAR   '#'
     #define LABEL_CHAR     ':'
     #define DIRECT_CHAR    '%'
     #define SEPARATOR_CHAR ','
 
+    #define SKIPPED_CHARS " \t\n\0"
     #define LABEL_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789"
 
     #define NAME_CMD_STRING    ".name"
@@ -46,11 +49,27 @@ typedef struct op_s {
     uint16_t nbr_cycles;
 } op_t;
 
-    #define IND_SIZE 2
-    #define DIR_SIZE 4
-    #define REG_SIZE 1
+/*
+** size (in bytes)
+*/
+    #define OP_SIZE 1
 
-static const op_t op_tab[21] = {
+    #define REG_SIZE 1
+    #define DIR_SIZE 4
+    #define IND_SIZE 2
+    #define IDX_SIZE 2
+
+    #define REG_CODE 1
+    #define DIR_CODE 2
+    #define IND_CODE 3
+
+    #define TO_REG(x) (uint8_t)x
+    #define TO_DIR(x) (uint32_t)x
+    #define TO_IND(x) (uint16_t)x
+
+    #define OP_TAB_SIZE 21
+
+static const op_t op_tab[OP_TAB_SIZE] = {
     /*
     ** Mnemonic,
     ** Number of arguments, {
@@ -206,6 +225,7 @@ static const op_t op_tab[21] = {
     #define COMMENT_LENGTH   2048
 
     #define COREWAR_EXEC_MAGIC 0xea83f3u
+    #define COREWAR_EXEC_MAGIC_REV 0xf383ea00u
 
 typedef struct header_s {
     uint32_t magic;

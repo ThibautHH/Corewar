@@ -4,8 +4,9 @@
 ** File description:
 ** main.c
 */
+#include "corewar/asm.h"
 
-int main(void)
+int main(int ac, char **av)
 {
-    return 0;
+    return (ac == 2 && asm_f(av[1])) ? 0 : 84;
 }
