@@ -5,75 +5,64 @@
 ** extract.c
 */
 
-#include <stdio.h>
 #include <malloc.h>
 
-#include "list.h"
 #include "ice/string.h"
+#include "ice/memory.h"
 #include "corewar/asm.h"
 
-static bool as_separator(precoded_op_t *current_op,
-    char **token, uint32_t *token_len)
+static bool as_separator(precoded_op_t *current_op, token_t *token)
 {
-    char *last_arg = current_op->args[current_op->arg_count - 1];
+    char *last_arg = ARGS[ARG_COUNT - 1];
 
-    if (current_op->arg_count == 0)
+    if (ARG_COUNT == 0)
         return true;
     if (last_arg[ice_strlen(last_arg) - 1] == SEPARATOR_CHAR) {
         last_arg[ice_strlen(last_arg) - 1] = '\0';
-        printf("\033[32m[%s]\033[0m\t", last_arg);
         return true;
     }
-    if (*token[0] == SEPARATOR_CHAR) {
-        (*token)++;
-        (*token_len)--;
-        printf("\033[32m[%s]\033[0m\t", last_arg);
+    if (P_TOKEN[0] == SEPARATOR_CHAR) {
+        (P_TOKEN)++;
+        (P_LEN)--;
         return true;
     }
     return false;
 }
 
-static int handle_token(list_t *op_list, char *token, uint32_t token_len)
+static bool handle_token(parse_t *parse, token_t *token)
 {
     static precoded_op_t *current_op = NULL;
 
     if (current_op) {
-        if (!as_separator(current_op, &token, &token_len))
-            return printf("\033[31mERROR\033[0m");
-        current_op->args[current_op->arg_count++] =
-            ice_strndup(token, token_len);
-        if (current_op->arg_count == current_op->op.nbr_args) {
-            printf("\033[32m[%.*s]\033[0m\n", token_len, token);
-            list_add(op_list, current_op);
+        if (!as_separator(current_op, token))
+            return false;
+        ARGS[ARG_COUNT++] =
+            ice_strndup(P_TOKEN, P_LEN);
+        if (ARG_COUNT == OP.nbr_args) {
+            list_add(L_OP, current_op);
             current_op = NULL;
         }
-        return 0;
+        return true;
     }
-    if (token[token_len - 1] == LABEL_CHAR)
-        return label_is_valid(token) ?
-            printf("\033[33m[%.*s]\033[0m\n", token_len - 1, token) :
-            printf("\033[31mERROR\033[0m");
-    for (uint32_t i = 0; i < OP_TAB_SIZE; i++)
-        if (!ice_strncmp(token, op_tab[i].mnemonic, token_len)) {
-            current_op = malloc(sizeof(precoded_op_t));
-            current_op->op = op_tab[i];
-            return printf("\t\033[34m[%s]\033[0m\t", op_tab[i].mnemonic);
-        }
-    return 84;
+    return (P_TOKEN[P_LEN - 1] == LABEL_CHAR) ? create_label(parse, token) :
+        create_operator(parse, token, &current_op);
 }
 
 void extract(char **lines)
 {
-    uint32_t token_len;
-    list_t *op_list = list_create();
+    parse_t *parse = create_parse();
 
-    for (char *token = *lines; token; token = *(lines++)) {
-        for (; token[0] && token[0] != COMMENT_CHAR; token += token_len) {
-            token = token_skip_chars(token);
-            token_len = token_get_len(token);
-            if (token[0] == COMMENT_CHAR || token[0] == '\0')
+    if (!parse)
+        return;
+    for (token_t token = (token_t){*lines, 0}; TOKEN; TOKEN = *(lines++)) {
+        for (; TOKEN[0] && TOKEN[0] != COMMENT_CHAR; TOKEN += LEN) {
+            TOKEN = token_skip_chars(TOKEN);
+            LEN = token_get_len(TOKEN);
+            if (TOKEN[0] == COMMENT_CHAR || TOKEN[0] == '\0')
                 break;
-            handle_token(op_list, token, token_len);
+            handle_token(parse, &token);
+            T_COUNT++;
         }
     }
+    display_token(parse);
 }

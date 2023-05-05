@@ -23,7 +23,10 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				token.c				\
 				extract.c			\
 				create_header.c		\
-				label_is_valid.c	\
+				create_parse.c		\
+				label.c				\
+				operator.c			\
+				display_token.c		\
 				)
 
 DIR_BUILD	:=	../build/

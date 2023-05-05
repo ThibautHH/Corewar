@@ -10,6 +10,7 @@
 
     #include <stdbool.h>
 
+    #include "list.h"
     #include "corewar/op.h"
 
     #define STRING_CHAR '\"'
@@ -21,6 +22,36 @@ typedef struct precoded_op_s {
     char *args[4];
     uint8_t arg_count;
 } precoded_op_t;
+
+    #define OP current_op->op
+    #define ARGS current_op->args
+    #define ARG_COUNT current_op->arg_count
+
+typedef struct precoded_label_s {
+    char *name;
+    uint32_t index;
+} precoded_label_t;
+
+typedef struct token_s {
+    char *str;
+    uint32_t len;
+} token_t;
+
+    #define TOKEN (token.str)
+    #define LEN (token.len)
+
+    #define P_TOKEN (token->str)
+    #define P_LEN (token->len)
+
+typedef struct parse_s {
+    list_t *op;
+    list_t *label;
+    uint32_t count;
+} parse_t;
+
+    #define L_OP (parse->op)
+    #define L_LABEL (parse->label)
+    #define T_COUNT (parse->count)
 
 //
 // ASM
@@ -82,6 +113,12 @@ uint32_t token_get_len(const char *str);
 header_t *create_header(char ***lines);
 
 //
+// Parse
+//
+
+parse_t *create_parse(void);
+
+//
 // Extract
 //
 
@@ -91,6 +128,19 @@ void extract(char **lines);
 // Label
 //
 
-bool label_is_valid(char *label);
+bool create_label(parse_t *parse, token_t *token);
+
+//
+// Operator
+//
+
+bool create_operator(parse_t *parse, token_t *token,
+    precoded_op_t **current_op);
+
+//
+// Display
+//
+
+void display_token(parse_t *parse);
 
 #endif /* !COREWAR_ASM_H */
