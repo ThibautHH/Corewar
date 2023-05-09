@@ -24,7 +24,8 @@ bool asm_f(char *filepath)
 
     if (!parser || !code)
         return false;
-    writer(filepath, header, code);
+    if (!writer(filepath, header, code))
+        return false;
     destroy_parser(parser);
     free(header);
     return true;

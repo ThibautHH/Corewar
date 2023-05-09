@@ -175,7 +175,7 @@ bool add_argument(code_t *code, precode_t *op, uint8_t index, char *arg);
 // Display
 //
 
-void writer(char *filepath, header_t *header,code_t *code);
+bool writer(char *filepath, header_t *header,code_t *code);
 
 void display_token(parser_t *parser);
 
