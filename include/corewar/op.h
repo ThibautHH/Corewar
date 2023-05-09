@@ -228,10 +228,10 @@ static const op_t op_tab[OP_TAB_SIZE] = {
     #define COREWAR_EXEC_MAGIC_REV 0xf383ea00u
 
 typedef struct header_s {
-    uint32_t magic;
-    char prog_name[PROG_NAME_LENGTH];
-    size_t prog_size;
-    char comment[COMMENT_LENGTH];
+    int magic;
+    char prog_name[PROG_NAME_LENGTH + 1];
+    int prog_size;
+    char comment[COMMENT_LENGTH + 1];
 } header_t;
 
     #define CYCLE_TO_DIE 1536u    // number of cycle before being declared dead

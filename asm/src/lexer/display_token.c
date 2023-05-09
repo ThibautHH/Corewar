@@ -24,16 +24,16 @@ static void display_label(list_node_t **n_label , precoded_label_t **label,
 void display_token(parser_t *parser)
 {
     uint32_t count = 0;
-    precoded_op_t *op;
+    precoded_op_t *current_op;
     list_node_t *n_label = L_LABEL->head;
     precoded_label_t *label = (n_label) ? n_label->value : NULL;
 
     for (list_node_t *node = L_OP->head; node; node = node->next) {
-        op = node->value;
+        current_op = node->value;
         display_label(&n_label, &label, count);
-        ice_printf("\t\033[34m[%s]\033[0m\t", op->op.mnemonic);
-        for (uint8_t i = 0; i < op->op.nbr_args; i++) {
-            ice_printf("\033[32m[%s]\033[0m\t", op->args[i]);
+        ice_printf("\t\033[34m[%s]\033[0m\t", OP.mnemonic);
+        for (uint8_t i = 0; i < OP.nbr_args; i++) {
+            ice_printf("\033[32m[%s]\033[0m\t", ARGS[i]);
             count++;
         }
         ice_printf("\n");

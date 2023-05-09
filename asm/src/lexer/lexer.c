@@ -12,6 +12,10 @@
 #include "ice/string.h"
 #include "corewar/asm.h"
 
+/*
+ * TODO: Rewrite this function
+ */
+
 static char *get_file(char *filepath)
 {
     FILE *file = fopen(filepath, "r");
@@ -43,7 +47,6 @@ parser_t *lexer(header_t **header, char *filepath)
     parser = (*header) ? extract(lines) : NULL;
     if (!parser)
         return NULL;
-    display_token(parser);
     destroy_lexer(file, head);
     return parser;
 }

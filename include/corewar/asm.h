@@ -18,14 +18,13 @@
 
 typedef struct precoded_op_s {
     op_t op;
-    uint8_t type;
     char *args[MAX_ARGS_NUMBER];
     uint8_t arg_count;
 } precoded_op_t;
 
-    #define OP current_op->op
-    #define ARGS current_op->args
-    #define ARG_COUNT current_op->arg_count
+    #define OP (current_op->op)
+    #define ARGS (current_op->args)
+    #define ARG_COUNT (current_op->arg_count)
 
 typedef struct precoded_label_s {
     char *name;
@@ -53,6 +52,30 @@ typedef struct parser_s {
     #define L_LABEL (parser->label)
     #define T_COUNT (parser->count)
 
+typedef struct precode_s {
+    uint8_t op;
+    uint8_t type;
+    uint64_t args[MAX_ARGS_NUMBER];
+} precode_t;
+
+    #define GET_OFFSET(index) ((MAX_ARGS_NUMBER - index - 1) * 2)
+
+typedef struct label_s {
+    char *name;
+    uint32_t index;
+    uint32_t *ptr;
+} label_t;
+
+typedef struct code_s {
+    list_t *precode;
+    uint32_t size_bits;
+    uint32_t size;
+} code_t;
+
+    #define PRECODE (code->precode)
+    #define SIZE_BITS (code->size_bits)
+    #define SIZE (code->size)
+
 //
 // ASM
 //
@@ -60,11 +83,11 @@ typedef struct parser_s {
 /**
  * @brief The main function of the asm
  *
- * @param file_path The file path
+ * @param filepath The file path
  * @return true If the asm worked
  * @return false If the asm failed
  */
-bool asm_f(char *file_path);
+bool asm_f(char *filepath);
 
 //
 // Lexer
@@ -119,6 +142,8 @@ header_t *create_header(char ***lines);
 
 parser_t *create_parser(void);
 
+code_t *parse(parser_t *parser);
+
 void destroy_parser(parser_t *parser);
 
 //
@@ -140,8 +165,16 @@ bool create_label(parser_t *parser, token_t *token);
 bool create_operator(token_t *token, precoded_op_t **current_op);
 
 //
+// Argument
+//
+
+bool add_argument(code_t *code, precode_t *op, uint8_t index, char *arg);
+
+//
 // Display
 //
+
+void writer(char *filepath, header_t *header,code_t *code);
 
 void display_token(parser_t *parser);
 

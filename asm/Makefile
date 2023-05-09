@@ -30,6 +30,17 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				display_token.c		\
 				)
 
+DIR			+=	$(addprefix $(DIR_SRC), parser/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				parser.c			\
+				add_argument.c		\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), writer/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				writer.c			\
+				)
+
 DIR_BUILD	:=	../build/
 
 ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/$(NAME)/)
