@@ -39,9 +39,7 @@ code_t *parse(parser_t *parser)
     if (!PRECODE)
         return NULL;
     for (list_node_t *node = L_OP->head; node; node = node->next)
-        if (!list_add(PRECODE, precoder(code, node->value))) {
-            printf("Error: list_add\n");
+        if (!list_add(PRECODE, precoder(code, node->value)))
             return NULL;
-        }
     return code;
 }

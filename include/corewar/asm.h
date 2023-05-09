@@ -15,6 +15,7 @@
 
     #define STRING_CHAR '\"'
     #define READ_SIZE 4096
+    #define ALLOC_SIZE 1024
 
 typedef struct precoded_op_s {
     op_t op;
@@ -177,5 +178,7 @@ bool add_argument(code_t *code, precode_t *op, uint8_t index, char *arg);
 void writer(char *filepath, header_t *header,code_t *code);
 
 void display_token(parser_t *parser);
+
+char *get_filename(char *filepath);
 
 #endif /* !COREWAR_ASM_H */

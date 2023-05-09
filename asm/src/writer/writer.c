@@ -7,6 +7,7 @@
 
 #include <stdio.h>
 
+#include "ice/string.h"
 #include "corewar/asm.h"
 
 /*
@@ -63,8 +64,15 @@ static void write_instructions(FILE *file, code_t *code)
 
 void writer(char *filepath, header_t *header,code_t *code)
 {
-    FILE *file = fopen("txt", "w");
+    char filename[ALLOC_SIZE];
+    FILE *file;
 
+
+    filepath = get_filename(filepath);
+    if (!filepath)
+        return;
+    sprintf(filename, "%s.cor", filepath);
+    file = fopen(filename, "w");
     if (!file)
         return;
     write_header(file, header, code);

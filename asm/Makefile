@@ -39,6 +39,7 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 DIR			+=	$(addprefix $(DIR_SRC), writer/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				writer.c			\
+				get_filename.c		\
 				)
 
 DIR_BUILD	:=	../build/
