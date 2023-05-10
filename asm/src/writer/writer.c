@@ -10,9 +10,9 @@
 #include "ice/string.h"
 #include "corewar/asm.h"
 
-static int reverse_int(int value)
+long reverse_int(long value)
 {
-    int result = 0;
+    long result = 0;
 
     for (uint16_t offset = 0; offset < 32; offset += 8)
         result = (result << 8) | ((value >> offset) & 0xFF);
@@ -21,8 +21,8 @@ static int reverse_int(int value)
 
 static bool write_header(FILE *file, header_t *header, code_t *code)
 {
-    header->magic = reverse_int(COREWAR_EXEC_MAGIC);
-    header->prog_size = reverse_int(SIZE_BITS);
+    header->magic = (int)reverse_int(COREWAR_EXEC_MAGIC);
+    header->prog_size = (int)reverse_int(SIZE_BITS);
     return fwrite(header, sizeof(header_t), 1, file) > 0;
 }
 
@@ -31,15 +31,15 @@ static bool write_argument(FILE *file, precode_t *precode)
     bool len = 1;
 
     for (uint8_t i = 0; i < MAX_ARGS_NUMBER && len > 0; i++) {
-        if (precode->type & (T_REG << GET_OFFSET(i))) {
+        if (precode->type & (REG_CODE << GET_OFFSET(i))) {
             len = fwrite(&precode->args[i], REG_SIZE, 1, file);
             continue;
         }
-        if (precode->type & (T_IND << GET_OFFSET(i))) {
+        if (precode->type & (IND_CODE << GET_OFFSET(i))) {
             len = fwrite(&precode->args[i], IND_SIZE, 1, file);
             continue;
         }
-        if (precode->type & (T_DIR << GET_OFFSET(i))) {
+        if (precode->type & (DIR_CODE << GET_OFFSET(i))) {
             len = fwrite(&precode->args[i], DIR_SIZE, 1, file);
             continue;
         }

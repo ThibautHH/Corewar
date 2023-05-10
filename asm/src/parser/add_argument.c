@@ -6,6 +6,7 @@
 */
 
 #include "ice/int.h"
+#include "ice/memory.h"
 #include "corewar/asm.h"
 
 /*
@@ -29,12 +30,18 @@ static bool add_dir(code_t *code, precode_t *op, uint8_t index, char *arg)
 {
     char *endptr;
     int64_t value;
+    search_label_t *search_label;
 
     op->type |= T_DIR << GET_OFFSET(index);
     SIZE_BITS += DIR_SIZE;
     if (arg[1] == LABEL_CHAR) {
-        op->args[index] = 0;
-        return true;
+        search_label = ice_calloc(1, sizeof(search_label_t));
+        if (!search_label)
+            return false;
+        search_label->name = arg + 2;
+        search_label->index = SIZE_BITS;
+        search_label->ptr = &op->args[index];
+        return list_add(SEARCH_LABELS, search_label);;
     }
     value = ice_strtol(arg + 1, &endptr);
     if (*endptr)

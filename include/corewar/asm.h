@@ -56,24 +56,33 @@ typedef struct parser_s {
 typedef struct precode_s {
     uint8_t op;
     uint8_t type;
-    uint64_t args[MAX_ARGS_NUMBER];
+    int64_t args[MAX_ARGS_NUMBER];
 } precode_t;
 
     #define GET_OFFSET(index) ((MAX_ARGS_NUMBER - index - 1) * 2)
 
+typedef struct search_label_s {
+    char *name;
+    uint32_t index;
+    int64_t *ptr;
+} search_label_t;
+
 typedef struct label_s {
     char *name;
     uint32_t index;
-    uint32_t *ptr;
 } label_t;
 
 typedef struct code_s {
     list_t *precode;
+    list_t *labels;
+    list_t *search_labels;
     uint32_t size_bits;
     uint32_t size;
 } code_t;
 
     #define PRECODE (code->precode)
+    #define LABELS (code->labels)
+    #define SEARCH_LABELS (code->search_labels)
     #define SIZE_BITS (code->size_bits)
     #define SIZE (code->size)
 
@@ -180,5 +189,7 @@ bool writer(char *filepath, header_t *header,code_t *code);
 void display_token(parser_t *parser);
 
 char *get_filename(char *filepath);
+
+long reverse_int(long value);
 
 #endif /* !COREWAR_ASM_H */
