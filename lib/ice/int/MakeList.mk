@@ -14,4 +14,5 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				ice_ftoa.c		\
 				ice_strtol.c	\
 				ice_intlen.c	\
+				ice_is_strnum.c	\
 				)
