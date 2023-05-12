@@ -15,13 +15,13 @@ static int check_if_args_aberations(int ac, char **av)
 {
     for (int i = 1; i < ac; i++) {
         if (!ice_strcmp(av[i], "-dump")
-            && (i + 1 >= ac || !IS_STR_NUM(av[i + 1])))
+            && (i + 1 >= ac || !ice_is_strnum(av[i + 1])))
             return 1;
         if (!ice_strcmp(av[i], "-n")
-            && (i + 1 >= ac || !IS_STR_NUM(av[i + 1])))
+            && (i + 1 >= ac || !ice_is_strnum(av[i + 1])))
             return 1;
         if (!ice_strcmp(av[i], "-a")
-            && (i + 1 >= ac || !IS_STR_NUM(av[i + 1])))
+            && (i + 1 >= ac || !ice_is_strnum(av[i + 1])))
             return 1;
     }
     return 0;
