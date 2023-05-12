@@ -64,4 +64,11 @@ ll_t ice_atoi(const char *str);
  */
 ll_t ice_strtol(const char *str, char **endptr);
 
+/**
+ * @brief Check if the string is a number.
+ * @param str that will be checked.
+ * @return true if the string is a number, false otherwise.
+ */
+int ice_is_strnum(char const *str);
+
 #endif /* !ICE_INT_H */
