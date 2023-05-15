@@ -41,3 +41,6 @@ vgcore.*
 
 # Tests files
 tests/corewar_bins
+
+# Tests folder
+out

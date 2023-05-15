@@ -21,7 +21,7 @@ static bool add_reg(code_t *code, precode_t *op, uint8_t index, char *arg)
     if (*endptr || value < 0 || value > REG_NUMBER)
         return false;
     op->type |= T_REG << GET_OFFSET(index);
-    SIZE_BITS += REG_SIZE;
+    TMP_SIZE_BITS += REG_SIZE;
     op->args[index] = value;
     return true;
 }
@@ -33,15 +33,15 @@ static bool add_dir(code_t *code, precode_t *op, uint8_t index, char *arg)
     search_label_t *search_label;
 
     op->type |= T_DIR << GET_OFFSET(index);
-    SIZE_BITS += DIR_SIZE;
+    TMP_SIZE_BITS += DIR_SIZE;
     if (arg[1] == LABEL_CHAR) {
         search_label = ice_calloc(1, sizeof(search_label_t));
         if (!search_label)
             return false;
         search_label->name = arg + 2;
-        search_label->index = SIZE_BITS;
+        search_label->index = SIZE_BITS + 2;
         search_label->ptr = &op->args[index];
-        return list_add(SEARCH_LABELS, search_label);;
+        return list_add(SEARCH_LABELS, search_label);
     }
     value = ice_strtol(arg + 1, &endptr);
     if (*endptr)
@@ -58,7 +58,7 @@ static bool add_ind(code_t *code, precode_t *op, uint8_t index, char *arg)
     if (*endptr)
         return false;
     op->type |= T_IND << GET_OFFSET(index);
-    SIZE_BITS += IND_SIZE;
+    TMP_SIZE_BITS += IND_SIZE;
     op->args[index] = value;
     return true;
 }

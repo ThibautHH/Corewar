@@ -77,6 +77,7 @@ typedef struct code_s {
     list_t *labels;
     list_t *search_labels;
     uint32_t size_bits;
+    uint32_t tmp_size_bits;
     uint32_t size;
 } code_t;
 
@@ -84,6 +85,7 @@ typedef struct code_s {
     #define LABELS (code->labels)
     #define SEARCH_LABELS (code->search_labels)
     #define SIZE_BITS (code->size_bits)
+    #define TMP_SIZE_BITS (code->tmp_size_bits)
     #define SIZE (code->size)
 
 //

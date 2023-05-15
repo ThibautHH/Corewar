@@ -11,14 +11,6 @@
 #include "corewar/asm.h"
 #include "ice/string.h"
 
-/*TODO:
- * struct label_s {
- *   char *name;
- *   uint32_t *ptr;
- *   uint32_t index; // index when find
- * } label_t;
- */
-
 static bool get_label(code_t *code, parser_t *parser)
 {
     precoded_label_t *old_label = (parser->label->head) ?
@@ -57,12 +49,14 @@ static precode_t *precoder(code_t *code, parser_t *parser,
 
     if (!get_label(code, parser) || !precode)
         return NULL;
+    precode->op = OP.code;
     for (uint8_t i = 0; i < OP.nbr_args; i++) {
-        precode->op = OP.code;
         if (!add_argument(code, precode, i, ARGS[i]))
             return NULL;
         SIZE++;
     }
+    SIZE_BITS += TMP_SIZE_BITS;
+    TMP_SIZE_BITS = 0;
     SIZE++;
     return precode;
 }
