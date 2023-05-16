@@ -13,7 +13,8 @@ DIR_SRC		:=	src/
 
 DIR			:=	$(DIR_SRC)
 SRC			:=	$(addprefix $(DIR),\
-				main.c				\
+				main.c			\
+				open_files.c	\
 				)
 
 DIR_BUILD	:=	../build/
