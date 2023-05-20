@@ -15,15 +15,20 @@
     #define IDX_MOD         512u    /* modulo of the index < */
     #define MAX_ARGS_NUMBER 4u      /* this may not be changed 2^*IND_SIZE */
 
+    #define REG_CHAR       'r'      /* character that indicates a register */
     #define COMMENT_CHAR   '#'
     #define LABEL_CHAR     ':'
     #define DIRECT_CHAR    '%'
     #define SEPARATOR_CHAR ','
+    #define STRING_CHAR    '"'
 
+    #define SKIPPED_CHARS " \t"
     #define LABEL_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789"
 
     #define NAME_CMD_STRING    ".name"
+    #define NAME_CMD_LEN       5
     #define COMMENT_CMD_STRING ".comment"
+    #define COMMENT_CMD_LEN    8
 
     #define REG_NUMBER 16   /* r1 to r(n) */
 
@@ -70,7 +75,9 @@ typedef struct op_s {
     #define DIR_SIZE 4
     #define REG_SIZE 1
 
-static const op_t op_tab[21] = {
+    #define OP_TAB_SIZE 21
+
+static const op_t op_tab[OP_TAB_SIZE] = {
     /*
     ** Code,
     ** Mnemonic,
