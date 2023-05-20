@@ -237,7 +237,7 @@ static const op_t op_tab[OP_TAB_SIZE] = {
 typedef struct header_s {
     uint32_t magic;
     char prog_name[PROG_NAME_LENGTH];
-    size_t prog_size;
+    uint32_t prog_size;
     char comment[COMMENT_LENGTH];
 } header_t;
 
