@@ -15,6 +15,7 @@ DIR			:=	$(DIR_SRC)
 SRC			:=	$(addprefix $(DIR),\
 				main.c			\
 				open_files.c	\
+				compile.c		\
 				)
 
 DIR_BUILD	:=	../build/
@@ -38,7 +39,7 @@ D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/$(NAME)/)
 D_OBJ		:=	$(patsubst %.c, $(D_ROOT_OBJ)%.o, $(SRC))
 DIR_OBJ		+=	$(addprefix $(D_ROOT_OBJ), $(DIR))
 
-all:				| $(DIR_OBJ) lib $(NAME)
+all:				$(DIR_OBJ) lib $(NAME)
 
 $(DIR_OBJ):
 	@mkdir -p $(DIR_OBJ)\
@@ -68,7 +69,7 @@ lib_debug:
 
 debug:				CFLAGS += $(DEBUG)
 debug:				OBJ := $(D_OBJ)
-debug:				| lib_debug $(DIR_OBJ) $(D_OBJ) $(NAME)
+debug:				lib_debug $(DIR_OBJ) $(D_OBJ) $(NAME)
 
 clean:
 	@$(MAKE) $@

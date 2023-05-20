@@ -26,7 +26,8 @@ void __attribute__((noreturn)) quit(asm_t *ctx, int status)
 
 int main(int argc, char **argv)
 {
-    asm_t ctx = {.file_name = argv[1]};
+    asm_t ctx = {.cmd = *argv, .file_name = argv[1], .line = 1, .col = 1,
+        .header = {.magic = ENDIAN(COREWAR_EXEC_MAGIC)}};
 
     if (argc != 2 || !argv[1] || !*(argv[1])) {
         ice_dprintf(STDERR_FILENO, USAGE, *argv);
@@ -38,5 +39,6 @@ int main(int argc, char **argv)
     }
     if (!open_binaries(&ctx, argv[1]))
         return 84;
+    compile(&ctx);
     quit(&ctx, 0);
 }
