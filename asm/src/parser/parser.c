@@ -62,18 +62,18 @@ static parser_op_t *precoder(parser_t *parser, lexer_t *lexer, lexer_op_t *op)
 
 parser_t *parser_f(lexer_t *lexer)
 {
-    parser_t *code = ice_calloc(1, sizeof(parser_t));
+    parser_t *parser = ice_calloc(1, sizeof(parser_t));
 
-    if (!code)
+    if (!parser)
         return NULL;
-    *code = (parser_t){list_create(), list_create(), list_create(), 0, 0, 0};
-    if (!code->precode || !code->labels || !code->search_labels)
+    *parser = (parser_t){list_create(), list_create(), list_create(), 0, 0, 0};
+    if (!parser->precode || !parser->labels || !parser->search_labels)
         return NULL;
     for (list_node_t *node = lexer->op->head; node; node = node->next)
-        if (!list_add(code->precode, precoder(code, lexer, node->value)))
+        if (!list_add(parser->precode, precoder(parser, lexer, node->value)))
             return NULL;
-    for (list_node_t *node = code->search_labels->head; node;
+    for (list_node_t *node = parser->search_labels->head; node;
         node = node->next)
-        set_label(code, node->value);
-    return code;
+        set_label(parser, node->value);
+    return parser;
 }

@@ -10,7 +10,6 @@
 #include "corewar/asm.h"
 
 /*
- * TODO: Proper naming
  * TODO: Free all the memory
  * TODO: Error handling on the return value
  * TODO: BONUS: See error and the line were occurred

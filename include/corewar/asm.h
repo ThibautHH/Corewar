@@ -57,7 +57,7 @@ typedef struct parser_op_s {
 typedef struct search_label_s {
     char *name;
     uint32_t index;
-    int64_t *ptr;
+    uint32_t *ptr;
 } search_label_t;
 
 typedef struct parser_s {
@@ -159,7 +159,7 @@ bool create_operator(token_t *token, lexer_op_t **op);
 // Argument
 //
 
-bool add_argument(parser_t *code, parser_op_t *op, uint8_t index, char *arg);
+bool add_argument(parser_t *parser, parser_op_t *op, uint8_t index, char *arg);
 
 //
 // Display
