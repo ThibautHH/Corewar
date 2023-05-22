@@ -12,6 +12,9 @@
 #include "corewar/corewar.h"
 
 void parse_args(int ac, char **av, vm_t *vm);
+void print_all_champs(vm_t vm);
+void is_champ_number_already_used(vm_t *vm, int number,
+    champion_t *champion_origin);
 
 static const char *help_message =
 "USAGE\n"
@@ -34,10 +37,13 @@ int main(int ac, char **av)
         return (0);
     } else {
         vm_t vm = {0};
-
-        LIST_INIT(&vm.champ_list);
-
+        TAILQ_INIT(&vm.champ_list);
         parse_args(ac, av, &vm);
+        print_all_champs(vm);
+
+        champion_t *champion = NULL;
+        TAILQ_FOREACH(champion, &vm.champ_list, entries)
+            is_champ_number_already_used(&vm, champion->number, champion);
 
         if (vm.dump) {
             return (0);

@@ -11,7 +11,7 @@
 void vm_init(vm_t *vm, size_t cycle_to_die)
 {
     ice_memset(vm->memory, 0, sizeof(vm->memory));
-    LIST_INIT(&vm->champ_list);
+    TAILQ_INIT(&vm->champ_list);
     vm->cycle = 0;
     vm->cycle_to_die = cycle_to_die;
     vm->nb_live = 0;

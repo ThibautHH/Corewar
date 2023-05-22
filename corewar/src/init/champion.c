@@ -29,5 +29,5 @@ void champion_init(champion_t *champion, struct champion_info_s *info)
     ice_memcpy(champion->code, info->code, info->size);
     champion->load_address = info->load_address;
     champion->number = info->number;
-    LIST_INIT(&champion->process_list);
+    TAILQ_INIT(&champion->process_list);
 }

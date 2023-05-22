@@ -19,6 +19,7 @@ SRC			:=	$(addprefix $(DIR),		\
 DIR			+=	$(addprefix $(DIR_SRC), ./parsing/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				parse_args.c			\
+				error_handling.c		\
 				)
 
 DIR			+=	$(addprefix $(DIR_SRC), ./init/)
@@ -31,6 +32,11 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 DIR			+=	$(addprefix $(DIR_SRC), ./utils/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				is_nbr.c				\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), ./print/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				print_all_champs.c 		\
 				)
 
 DIR_BUILD	:=	../build/
@@ -80,7 +86,7 @@ lib:
 lib_debug:
 	@make -sC $(LIB) debug
 
-debug:				CFLAGS += $(DEBUG)
+debug:				CFLAGS += $(DEBUG) -DDEBUG
 debug:				OBJ := $(D_OBJ)
 debug:				$(command @make -sC $(LIB) debug)
 debug:				| lib_debug $(DIR_OBJ) $(D_OBJ) $(NAME)

@@ -121,7 +121,7 @@ void parse_args(int ac, char **av, vm_t *vm)
         champion_init(champion, (struct champion_info_s[]){{champion->name,
             champion->comment, champion->size, champion->code,
             v.current_champion_address, v.current_champion_number}});
-        LIST_INSERT_HEAD(&vm->champ_list, champion, entries);
+        TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
         v.current_champion_number++;
         v.address_specified = false;
     }
