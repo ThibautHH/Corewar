@@ -10,14 +10,14 @@
 #include "ice/string.h"
 
 #ifndef CHAMPION_INFO
-    struct champion_info_s {
-        char *name;
-        char *comment;
-        size_t size;
-        uint8_t *code;
-        size_t load_address;
-        size_t number;
-    };
+struct champion_info_s {
+    char *name;
+    char *comment;
+    size_t size;
+    uint8_t *code;
+    size_t load_address;
+    size_t number;
+};
 #endif /* !CHAMPION_INFO */
 
 void champion_init(champion_t *champion, struct champion_info_s *info)

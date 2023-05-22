@@ -15,14 +15,14 @@
 
 #ifndef CHAMPION_INIT
     #ifndef CHAMPION_INFO
-        struct champion_info_s {
-            char *name;
-            char *comment;
-            size_t size;
-            uint8_t *code;
-            size_t load_address;
-            size_t number;
-        };
+    struct champion_info_s {
+        char *name;
+        char *comment;
+        size_t size;
+        uint8_t *code;
+        size_t load_address;
+        size_t number;
+    };
     #endif /* !CHAMPION_INFO */
 
     void champion_init(champion_t *champion, struct champion_info_s *info);
@@ -30,20 +30,20 @@
 
 #ifndef PARSING
     #ifndef FLAG_STRUCT
-        struct FlagStruct {
-            char *flag;
-            bool *boolean;
-            size_t *value;
-        };
+    struct flag_t {
+        char *flag;
+        bool *boolean;
+        size_t *value;
+    };
     #endif /* !FLAG_STRUCT */
 
     #ifndef VAR_STRUCT
-        struct VarStruct {
-            size_t current_champion_address;
-            int current_champion_number;
-            bool address_specified;
-            int ret;
-        };
+    struct VarStruct {
+        size_t current_champion_address;
+        int current_champion_number;
+        bool address_specified;
+        int ret;
+    };
     #endif /* !VAR_STRUCT */
 #endif /* !PARSING */
 
@@ -80,7 +80,7 @@ static void error_flag(char *flag)
     exit(84);
 }
 
-static int handle_normal_flag(struct FlagStruct *flags,
+static int handle_normal_flag(struct flag_t *flags,
     int *i, int ac, char **av)
 {
     for (int j = 0; j < 3; j++) {
@@ -110,7 +110,7 @@ void parse_args(int ac, char **av, vm_t *vm)
         {"-a", &v.address_specified, &v.current_champion_address}};
     for (int i = 1; i < ac; i++) {
         for (int j = 0; flags[j].flag != NULL; j++)
-            v.ret = handle_normal_flag((struct FlagStruct*)flags, &i, ac, av);
+            v.ret = handle_normal_flag((struct flag_t*)flags, &i, ac, av);
         if (v.ret == 0) continue;
         champion_t *champion = malloc(sizeof(champion_t));
         parse_file(av[i], champion);
