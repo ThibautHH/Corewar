@@ -28,6 +28,11 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				vm.c					\
 				)
 
+DIR			+=	$(addprefix $(DIR_SRC), ./utils/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				is_nbr.c				\
+				)
+
 DIR_BUILD	:=	../build/
 
 ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/$(NAME)/)
