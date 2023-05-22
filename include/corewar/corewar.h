@@ -13,6 +13,8 @@
     #include <stdbool.h>
     #include <stdlib.h>
 
+    #define UNUSED __attribute__((unused))
+
     #define IS_NUM(c) (c >= '0' && c <= '9')
 
     #define END32_CENTRE(x) ((((x) & 0xFF00) << 8) | (((x) >> 8) & 0xFF00))
@@ -29,25 +31,25 @@ typedef struct register_s {
 } my_register_t;
 
 typedef struct process_s {
-    LIST_ENTRY(process_s) entries;
+    TAILQ_ENTRY(process_s) entries;
     uint8_t carry;
     size_t pc;
     my_register_t reg[REG_NUMBER];
 } process_t;
 
 typedef struct champion_s {
-    LIST_ENTRY(champion_s) entries;
+    TAILQ_ENTRY(champion_s) entries;
     char *name;
     char *comment;
     __uint32_t size;
     uint8_t *code;
     size_t load_address;
     size_t number;
-    LIST_HEAD(, process_s) process_list;
+    TAILQ_HEAD(, process_s) process_list;
 } champion_t;
 
 typedef struct vm_s {
-    LIST_HEAD(, champion_s) champ_list;
+    TAILQ_HEAD(, champion_s) champ_list;
     uint8_t memory[MEM_SIZE];
     size_t cycle;
     size_t cycle_to_die;
