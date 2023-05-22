@@ -11,6 +11,8 @@
 #include <malloc.h>
 #include "corewar/corewar.h"
 
+void parse_args(int ac, char **av, vm_t *vm);
+
 static const char *help_message =
 "USAGE\n"
 "./corewar"
@@ -27,21 +29,20 @@ static const char *help_message =
 
 int main(int ac, char **av)
 {
-    corewar_t *corewar;
+    if (ac < 2 || (!ice_strcmp(av[1], "-h") || !ice_strcmp(av[1], "--help"))) {
+        fwrite(help_message, 1, ice_strlen(help_message), stderr);
+        return (0);
+    } else {
+        vm_t vm = {0};
 
-    if (ac == 2
-        && (!ice_strcmp(av[1], "-h") || !ice_strcmp(av[1], "--help"))) {
-        ice_printf("%s", help_message);
-        return 0;
-    } else if (ac < 2) {
-        ice_printf("Usage: %s [-h | --help]\n", av[0]);
-        return 84;
+        LIST_INIT(&vm.champ_list);
+
+        parse_args(ac, av, &vm);
+
+        if (vm.dump) {
+            return (0);
+        }
+
+        return (0);
     }
-    corewar = malloc(sizeof(corewar_t));
-    if (parse_arg(corewar, ac, av)) {
-        ice_printf("Invalid argument, use -h or --help for more information\n");
-        free(corewar);
-        return 84;
-    }
-    return 0;
 }

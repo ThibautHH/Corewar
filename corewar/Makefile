@@ -21,6 +21,13 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				parse_args.c			\
 				)
 
+DIR			+=	$(addprefix $(DIR_SRC), ./init/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				champion.c				\
+				process.c				\
+				vm.c					\
+				)
+
 DIR_BUILD	:=	../build/
 
 ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), obj/$(NAME)/)
