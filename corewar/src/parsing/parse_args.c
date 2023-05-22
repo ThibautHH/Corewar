@@ -38,7 +38,7 @@
     #endif /* !FLAG_STRUCT */
 
     #ifndef VAR_STRUCT
-    struct VarStruct {
+    struct var_t {
         size_t current_champion_address;
         int current_champion_number;
         bool address_specified;
@@ -95,7 +95,7 @@ static int handle_normal_flag(struct flag_t *flags,
     return (1);
 }
 
-static size_t ternary_memory_champion(struct VarStruct v, champion_t *champion)
+static size_t ternary_memory_champion(struct var_t v, champion_t *champion)
 {
     return (!v.address_specified) ? (v.current_champion_address +
             champion->size) % MEM_SIZE : v.current_champion_address % MEM_SIZE;
@@ -103,11 +103,12 @@ static size_t ternary_memory_champion(struct VarStruct v, champion_t *champion)
 
 void parse_args(int ac, char **av, vm_t *vm)
 {
-    struct VarStruct v = {0, 1, false, 0};
+    struct var_t v = {0, 1, false, 0};
     struct { char *flag; bool *boolean; void *value; } flags[] = {
         {"-dump", &vm->dump, &vm->dump_cycle},
         {"-n", NULL, &v.current_champion_number},
-        {"-a", &v.address_specified, &v.current_champion_address}};
+        {"-a", &v.address_specified, &v.current_champion_address},
+    };
     for (int i = 1; i < ac; i++) {
         for (int j = 0; flags[j].flag != NULL; j++)
             v.ret = handle_normal_flag((struct flag_t*)flags, &i, ac, av);
