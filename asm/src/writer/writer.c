@@ -20,10 +20,12 @@ static bool write_argument(FILE *file, parser_op_t *precode)
             continue;
         }
         if (precode->type & (IND_CODE << GET_OFFSET(i))) {
+            precode->args[i] = ENDIAN((uint16_t)precode->args[i]);
             len = fwrite(&precode->args[i], IND_SIZE, 1, file);
             continue;
         }
         if (precode->type & (DIR_CODE << GET_OFFSET(i))) {
+            precode->args[i] = ENDIAN(precode->args[i]);
             len = fwrite(&precode->args[i], DIR_SIZE, 1, file);
             continue;
         }
