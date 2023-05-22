@@ -48,6 +48,7 @@ void champion_init(champion_t *champion, struct champion_info_s *info);
 #endif /* !PARSING */
 
 bool is_nbr(char *str);
+int get_smallest_cham_nb(vm_t *vm);
 
 static void parse_file(char *filename, champion_t *champion)
 {
@@ -122,7 +123,7 @@ void parse_args(int ac, char **av, vm_t *vm)
             champion->comment, champion->size, champion->code,
             v.current_champion_address, v.current_champion_number}});
         TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
-        v.current_champion_number++;
+        v.current_champion_number = get_smallest_cham_nb(vm);
         v.address_specified = false;
     }
 }
