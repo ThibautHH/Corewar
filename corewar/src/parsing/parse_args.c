@@ -25,7 +25,7 @@
     };
     #endif /* !CHAMPION_INFO */
 
-    void champion_init(champion_t *champion, struct champion_info_s *info);
+void champion_init(champion_t *champion, struct champion_info_s *info);
 #endif /* !CHAMPION_INIT */
 
 #ifndef PARSING
