@@ -36,17 +36,18 @@ static char *get_file(char *filepath)
     return content;
 }
 
-parser_t *lexer(header_t **header, char *filepath)
+lexer_t *lexer_f(header_t **header, char *filepath)
 {
     char *file = get_file(filepath);
     char **lines = (file) ? ice_strsplit(file, "\n") : NULL;
     void *head = (lines) ? &lines[0] : NULL;
-    parser_t *parser;
+    lexer_t *lexer;
 
     *header = (head) ? create_header(&lines) : NULL;
-    parser = (*header) ? extract(lines) : NULL;
-    if (!parser)
+    lexer = (*header) ? extract(lines) : NULL;
+    if (!lexer)
         return NULL;
-    destroy_lexer(file, head);
-    return parser;
+    ice_free_array(head);
+    free(file);
+    return lexer;
 }

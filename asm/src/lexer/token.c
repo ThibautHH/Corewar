@@ -33,3 +33,10 @@ uint32_t token_get_len(const char *str)
     }
     return len;
 }
+
+void update_token(token_t *token)
+{
+    token->str += token->len;
+    token->str = token_skip_chars(token->str);
+    token->len = token_get_len(token->str);
+}

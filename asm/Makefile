@@ -20,14 +20,12 @@ SRC			:=	$(addprefix $(DIR),\
 DIR			+=	$(addprefix $(DIR_SRC), lexer/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				lexer.c				\
-				destroy_lexer.c		\
 				token.c				\
 				extract.c			\
 				create_header.c		\
-				parser.c			\
+				destroy.c			\
 				label.c				\
 				operator.c			\
-				display_token.c		\
 				)
 
 DIR			+=	$(addprefix $(DIR_SRC), parser/)

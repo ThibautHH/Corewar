@@ -11,16 +11,16 @@
 #include "ice/memory.h"
 #include "corewar/asm.h"
 
-bool create_operator(token_t *token, precoded_op_t **current_op)
+bool create_operator(token_t *token, lexer_op_t **op)
 {
-    *current_op = ice_calloc(1, sizeof(precoded_op_t));
-    if (!(*current_op))
+    *op = ice_calloc(1, sizeof(lexer_op_t));
+    if (!(*op))
         return false;
     for (uint32_t i = 0; i < OP_TAB_SIZE; i++)
-        if (!ice_strncmp(P_TOKEN, op_tab[i].mnemonic, P_LEN)) {
-            (*current_op)->op = op_tab[i];
+        if (!ice_strncmp(token->str, op_tab[i].mnemonic, token->len)) {
+            (*op)->op = op_tab[i];
             return true;
         }
-    free(current_op);
+    free(op);
     return false;
 }

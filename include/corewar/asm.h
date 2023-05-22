@@ -17,47 +17,40 @@
     #define READ_SIZE 4096
     #define ALLOC_SIZE 1024
 
-typedef struct precoded_op_s {
+    #define END32_CENTRE(x) ((((x) & 0xFF00) << 8) | (((x) >> 8) & 0xFF00))
+    #define END32(x) (((x) << 24) | END32_CENTRE(x) | ((x) >> 24))
+    #define END16(x) (((x) << 8) | ((x) >> 8))
+
+typedef uint32_t u32_t;
+typedef uint16_t u16_t;
+
+    #define ENDIAN(x) (_Generic ((x), u32_t : END32(x), u16_t : END16(x)))
+
+typedef struct lexer_op_s {
     op_t op;
     char *args[MAX_ARGS_NUMBER];
     uint8_t arg_count;
-} precoded_op_t;
+} lexer_op_t;
 
-    #define OP (current_op->op)
-    #define ARGS (current_op->args)
-    #define ARG_COUNT (current_op->arg_count)
-
-typedef struct precoded_label_s {
-    char *name;
-    uint32_t index;
-} precoded_label_t;
-
-typedef struct token_s {
+typedef struct strlen_s {
     char *str;
     uint32_t len;
-} token_t;
+} strlen_t;
 
-    #define TOKEN (token.str)
-    #define LEN (token.len)
+typedef strlen_t label_t;
+typedef strlen_t token_t;
 
-    #define P_TOKEN (token->str)
-    #define P_LEN (token->len)
-
-typedef struct parser_s {
+typedef struct lexer_s {
     list_t *op;
     list_t *label;
     uint32_t count;
-} parser_t;
+} lexer_t;
 
-    #define L_OP (parser->op)
-    #define L_LABEL (parser->label)
-    #define T_COUNT (parser->count)
-
-typedef struct precode_s {
+typedef struct parser_op_s {
     uint8_t op;
     uint8_t type;
-    int64_t args[MAX_ARGS_NUMBER];
-} precode_t;
+    uint32_t args[MAX_ARGS_NUMBER];
+} parser_op_t;
 
     #define GET_OFFSET(index) ((MAX_ARGS_NUMBER - index - 1) * 2)
 
@@ -67,26 +60,14 @@ typedef struct search_label_s {
     int64_t *ptr;
 } search_label_t;
 
-typedef struct label_s {
-    char *name;
-    uint32_t index;
-} label_t;
-
-typedef struct code_s {
+typedef struct parser_s {
     list_t *precode;
     list_t *labels;
     list_t *search_labels;
     uint32_t size_bits;
     uint32_t tmp_size_bits;
     uint32_t size;
-} code_t;
-
-    #define PRECODE (code->precode)
-    #define LABELS (code->labels)
-    #define SEARCH_LABELS (code->search_labels)
-    #define SIZE_BITS (code->size_bits)
-    #define TMP_SIZE_BITS (code->tmp_size_bits)
-    #define SIZE (code->size)
+} parser_t;
 
 //
 // ASM
@@ -112,9 +93,7 @@ bool asm_f(char *filepath);
  * @param header The header
  * @param filepath The file path
  */
-parser_t *lexer(header_t **header, char *filepath);
-
-void destroy_lexer(char *file, void *head);
+lexer_t *lexer_f(header_t **header, char *filepath);
 
 //
 // Token
@@ -152,46 +131,44 @@ header_t *create_header(char ***lines);
 // Parser
 //
 
-parser_t *create_parser(void);
+lexer_t *create_lexer(void);
 
-code_t *parse(parser_t *parser);
+parser_t *parser_f(lexer_t *lexer);
 
-void destroy_parser(parser_t *parser);
+void destroy_lexer(lexer_t *lexer);
 
 //
 // Extract
 //
 
-parser_t *extract(char **lines);
+lexer_t *extract(char **lines);
 
 //
 // Label
 //
 
-bool create_label(parser_t *parser, token_t *token);
+bool create_label(lexer_t *lexer, token_t *token);
 
 //
 // Operator
 //
 
-bool create_operator(token_t *token, precoded_op_t **current_op);
+bool create_operator(token_t *token, lexer_op_t **op);
 
 //
 // Argument
 //
 
-bool add_argument(code_t *code, precode_t *op, uint8_t index, char *arg);
+bool add_argument(parser_t *code, parser_op_t *op, uint8_t index, char *arg);
 
 //
 // Display
 //
 
-bool writer(char *filepath, header_t *header,code_t *code);
-
-void display_token(parser_t *parser);
+bool writer(char *filepath, header_t *header,parser_t *code);
 
 char *get_filename(char *filepath);
 
-long reverse_int(long value);
+void update_token(token_t *token);
 
 #endif /* !COREWAR_ASM_H */

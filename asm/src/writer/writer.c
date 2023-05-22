@@ -10,23 +10,14 @@
 #include "ice/string.h"
 #include "corewar/asm.h"
 
-long reverse_int(long value)
+static bool write_header(FILE *file, header_t *header, parser_t *code)
 {
-    long result = 0;
-
-    for (uint16_t offset = 0; offset < 32; offset += 8)
-        result = (result << 8) | ((value >> offset) & 0xFF);
-    return result;
-}
-
-static bool write_header(FILE *file, header_t *header, code_t *code)
-{
-    header->magic = (int)reverse_int(COREWAR_EXEC_MAGIC);
-    header->prog_size = (int)reverse_int(SIZE_BITS);
+    header->magic = ENDIAN(COREWAR_EXEC_MAGIC);
+    header->prog_size = ENDIAN(code->size_bits);
     return fwrite(header, sizeof(header_t), 1, file) > 0;
 }
 
-static bool write_argument(FILE *file, precode_t *precode)
+static bool write_argument(FILE *file, parser_op_t *precode)
 {
     bool len = 1;
 
@@ -47,9 +38,9 @@ static bool write_argument(FILE *file, precode_t *precode)
     return len > 0;
 }
 
-static bool write_instructions(FILE *file, code_t *code)
+static bool write_instructions(FILE *file, parser_t *code)
 {
-    precode_t *precode;
+    parser_op_t *precode;
 
     for (list_node_t *node = code->precode->head; node; node = node->next) {
         precode = node->value;
@@ -61,7 +52,7 @@ static bool write_instructions(FILE *file, code_t *code)
     return true;
 }
 
-bool writer(char *filepath, header_t *header,code_t *code)
+bool writer(char *filepath, header_t *header,parser_t *code)
 {
     char filename[ALLOC_SIZE];
     FILE *file;

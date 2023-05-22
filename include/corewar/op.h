@@ -225,7 +225,6 @@ static const op_t op_tab[OP_TAB_SIZE] = {
     #define COMMENT_LENGTH   2048
 
     #define COREWAR_EXEC_MAGIC 0xea83f3u
-    #define COREWAR_EXEC_MAGIC_REV 0xf383ea00u
 
 typedef struct header_s {
     int magic;
