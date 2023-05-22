@@ -5,20 +5,8 @@
 ** extract.c
 */
 
-#include <malloc.h>
-
 #include "ice/string.h"
 #include "corewar/asm.h"
-
-lexer_t *create_lexer(void)
-{
-    lexer_t *lexer = malloc(sizeof(lexer_t));
-
-    if (!lexer)
-        return NULL;
-    *lexer = (lexer_t){list_create(), list_create(), 0};
-    return (lexer->op && lexer->label) ? lexer : NULL;
-}
 
 static bool as_separator(lexer_op_t *op, token_t *token)
 {
@@ -57,22 +45,21 @@ static bool handle_token(lexer_t *lexer, token_t *token)
         create_label(lexer, token) : create_operator(token, &op);
 }
 
-lexer_t *extract(char **lines)
+bool extract(lexer_t *lexer, char **lines)
 {
-    lexer_t *parser = create_lexer();
     token_t tmp = (token_t){*lines, 0};
     token_t *token = &tmp;
 
-    if (!parser)
-        return NULL;
+    if (!lexer)
+        return false;
     for (; token->str; token->str = *(lines++)) {
         for (; token->str[0] && token->str[0] != COMMENT_CHAR;) {
             update_token(token);
             if (token->str[0] == COMMENT_CHAR || token->str[0] == '\0')
                 break;
-            handle_token(parser, token);
-            parser->count++;
+            handle_token(lexer, token);
+            lexer->count++;
         }
     }
-    return parser;
+    return true;
 }

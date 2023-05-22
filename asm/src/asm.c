@@ -17,13 +17,11 @@
 
 bool asm_f(char *filepath)
 {
-    header_t *header;
-    lexer_t *parser = lexer_f(&header, filepath);
-    parser_t *code = (parser) ? parser_f(parser) : NULL;
+    lexer_t *lexer = lexer_f(filepath);
+    parser_t *parser = (lexer) ? parser_f(lexer) : NULL;
 
-    if (!code || !writer(filepath, header, code))
+    if (!parser || !writer(filepath, parser))
         return false;
-    destroy_lexer(parser);
-    free(header);
+    destroy_lexer(lexer);
     return true;
 }

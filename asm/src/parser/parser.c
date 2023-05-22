@@ -66,7 +66,8 @@ parser_t *parser_f(lexer_t *lexer)
 
     if (!parser)
         return NULL;
-    *parser = (parser_t){list_create(), list_create(), list_create(), 0, 0, 0};
+    *parser = (parser_t){lexer->header, list_create(), list_create(),
+        list_create(), 0, 0, 0};
     if (!parser->precode || !parser->labels || !parser->search_labels)
         return NULL;
     for (list_node_t *node = lexer->op->head; node; node = node->next)

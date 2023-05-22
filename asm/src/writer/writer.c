@@ -10,13 +10,6 @@
 #include "ice/string.h"
 #include "corewar/asm.h"
 
-static bool write_header(FILE *file, header_t *header, parser_t *code)
-{
-    header->magic = ENDIAN(COREWAR_EXEC_MAGIC);
-    header->prog_size = ENDIAN(code->size_bits);
-    return fwrite(header, sizeof(header_t), 1, file) > 0;
-}
-
 static bool write_argument(FILE *file, parser_op_t *precode)
 {
     bool len = 1;
@@ -38,11 +31,15 @@ static bool write_argument(FILE *file, parser_op_t *precode)
     return len > 0;
 }
 
-static bool write_instructions(FILE *file, parser_t *code)
+static bool write_instructions(FILE *file, parser_t *parser)
 {
     parser_op_t *precode;
 
-    for (list_node_t *node = code->precode->head; node; node = node->next) {
+    parser->header->magic = ENDIAN(COREWAR_EXEC_MAGIC);
+    parser->header->prog_size = ENDIAN(parser->size_bits);
+    if (fwrite(parser->header, sizeof(header_t), 1, file) < 0)
+        return false;
+    for (list_node_t *node = parser->precode->head; node; node = node->next) {
         precode = node->value;
         if (!fwrite(&precode->op, OP_SIZE, 1, file)
             || !fwrite(&precode->type, sizeof(uint8_t), 1, file)
@@ -52,7 +49,7 @@ static bool write_instructions(FILE *file, parser_t *code)
     return true;
 }
 
-bool writer(char *filepath, header_t *header,parser_t *code)
+bool writer(char *filepath, parser_t *parser)
 {
     char filename[ALLOC_SIZE];
     FILE *file;
@@ -64,7 +61,6 @@ bool writer(char *filepath, header_t *header,parser_t *code)
     file = fopen(filename, "w");
     if (!file)
         return false;
-    return write_header(file, header, code)
-        && write_instructions(file, code)
+    return write_instructions(file, parser)
         && !fclose(file);
 }

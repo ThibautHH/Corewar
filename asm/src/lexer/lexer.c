@@ -36,16 +36,24 @@ static char *get_file(char *filepath)
     return content;
 }
 
-lexer_t *lexer_f(header_t **header, char *filepath)
+lexer_t *create_lexer(char ***lines)
+{
+    lexer_t *lexer = malloc(sizeof(lexer_t));
+
+    if (!lexer)
+        return NULL;
+    *lexer = (lexer_t){create_header(lines), list_create(), list_create(), 0};
+    return (lexer->op && lexer->label) ? lexer : NULL;
+}
+
+lexer_t *lexer_f(char *filepath)
 {
     char *file = get_file(filepath);
     char **lines = (file) ? ice_strsplit(file, "\n") : NULL;
     void *head = (lines) ? &lines[0] : NULL;
-    lexer_t *lexer;
+    lexer_t *lexer = (lines) ? create_lexer(&lines) : NULL;
 
-    *header = (head) ? create_header(&lines) : NULL;
-    lexer = (*header) ? extract(lines) : NULL;
-    if (!lexer)
+    if (!lexer || !extract(lexer, lines))
         return NULL;
     ice_free_array(head);
     free(file);

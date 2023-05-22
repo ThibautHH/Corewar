@@ -41,6 +41,7 @@ typedef strlen_t label_t;
 typedef strlen_t token_t;
 
 typedef struct lexer_s {
+    header_t *header;
     list_t *op;
     list_t *label;
     uint32_t count;
@@ -61,6 +62,7 @@ typedef struct search_label_s {
 } search_label_t;
 
 typedef struct parser_s {
+    header_t *header;
     list_t *precode;
     list_t *labels;
     list_t *search_labels;
@@ -93,7 +95,7 @@ bool asm_f(char *filepath);
  * @param header The header
  * @param filepath The file path
  */
-lexer_t *lexer_f(header_t **header, char *filepath);
+lexer_t *lexer_f(char *filepath);
 
 //
 // Token
@@ -131,8 +133,6 @@ header_t *create_header(char ***lines);
 // Parser
 //
 
-lexer_t *create_lexer(void);
-
 parser_t *parser_f(lexer_t *lexer);
 
 void destroy_lexer(lexer_t *lexer);
@@ -141,7 +141,7 @@ void destroy_lexer(lexer_t *lexer);
 // Extract
 //
 
-lexer_t *extract(char **lines);
+bool extract(lexer_t *lexer, char **lines);
 
 //
 // Label
@@ -165,7 +165,7 @@ bool add_argument(parser_t *parser, parser_op_t *op, uint8_t index, char *arg);
 // Display
 //
 
-bool writer(char *filepath, header_t *header,parser_t *code);
+bool writer(char *filepath, parser_t *parser);
 
 char *get_filename(char *filepath);
 
