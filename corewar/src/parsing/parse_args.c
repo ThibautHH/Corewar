@@ -87,7 +87,8 @@ static int handle_normal_flag(struct flag_t *flags,
     for (int j = 0; j < 3; j++) {
         if (!ice_strcmp(av[*i], flags[j].flag)) {
             (flags[j].boolean) ? *flags[j].boolean = true : 0;
-            (*i + 1 >= ac || !is_nbr(av[*i + 1])) ? error_flag(flags[j].flag) : 0;
+            (*i + 1 >= ac || !is_nbr(av[*i + 1]))
+                ? error_flag(flags[j].flag) : 0;
             *flags[j].value = ice_atoi(av[*i + 1]);
             *i += 2;
             return (0);
