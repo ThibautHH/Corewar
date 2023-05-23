@@ -26,14 +26,15 @@ static char *get_file(char *filepath)
         return NULL;
     while (content) {
         size += fread(content + size, sizeof(char), READ_SIZE, file);
-        if (size % READ_SIZE != 0)
+        if (size % READ_SIZE != 0 || size == 0)
             break;
         content = realloc(content, sizeof(char) * (size + READ_SIZE + 1));
     }
     fclose(file);
-    if (content)
-        content[size] = '\0';
-    return content;
+    if (!content)
+        return NULL;
+    content[size] = '\0';
+    return (content[0]) ? content : NULL;
 }
 
 lexer_t *create_lexer(char ***lines)
