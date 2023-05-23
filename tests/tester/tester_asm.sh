@@ -35,7 +35,7 @@ do
           printf "[\033[0;34mTest\033[0m][\033[0;32mOK\033[0m] $file\n"
     fi
 
-    rm ${FILENAME}.hex ${FILENAME}.hex.ref ${FILENAME}.cor
+    rm -f ${FILENAME}.hex ${FILENAME}.hex.ref ${FILENAME}.cor
 done
 
 function handle_error() {
@@ -46,6 +46,8 @@ function handle_error() {
         else
             printf "[\033[0;34mTest\033[0m][\033[0;31mKO\033[0m] $1\n"
         fi
+
+        rm -f $1.cor
 }
 
 for file in ./errors/*

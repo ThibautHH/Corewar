@@ -19,17 +19,18 @@ static ssize_t get_string_len(const char *str)
     return (str[len] != STRING_CHAR) ? -1 : len - 1;
 }
 
-static bool extract_variable(char *dest, char **token)
+static bool extract_variable(char *dest, char **token, uint32_t max_len)
 {
     ssize_t string_len = get_string_len(*token);
 
-    if (string_len == -1)
+    if (string_len == -1 || string_len > max_len)
         return false;
     ice_strncpy(dest, ++(*token), string_len);
     return !token_skip_chars(*token + string_len + 1)[0];
 }
 
-static bool get_variable(char *dest, char ***lines, char *search)
+static bool get_variable(char *dest, char ***lines, char *search,
+    uint32_t max_len)
 {
     uint32_t token_len = ice_strlen(search);
     char *token;
@@ -41,7 +42,7 @@ static bool get_variable(char *dest, char ***lines, char *search)
         if (!ice_strncmp(token, search, token_len)) {
             token = token_skip_chars(token + token_len);
             (*lines)++;
-            return extract_variable(dest, &token);
+            return extract_variable(dest, &token, max_len);
         }
     }
     return false;
@@ -52,7 +53,9 @@ header_t *create_header(char ***lines)
     header_t *header = ice_calloc(1, sizeof(header_t));
 
     return (header
-        && get_variable(header->prog_name, lines, NAME_CMD_STRING)
-        && get_variable(header->comment, lines, COMMENT_CMD_STRING))
+        && get_variable(header->prog_name, lines, NAME_CMD_STRING,
+        PROG_NAME_LENGTH)
+        && get_variable(header->comment, lines, COMMENT_CMD_STRING,
+        COMMENT_LENGTH))
         ? header : NULL;
 }

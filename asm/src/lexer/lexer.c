@@ -44,7 +44,7 @@ lexer_t *create_lexer(char ***lines)
     if (!lexer)
         return NULL;
     *lexer = (lexer_t){create_header(lines), list_create(), list_create(), 0};
-    return (lexer->op && lexer->label) ? lexer : NULL;
+    return (lexer->header && lexer->op && lexer->label) ? lexer : NULL;
 }
 
 lexer_t *lexer_f(char *filepath)

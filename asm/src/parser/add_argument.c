@@ -13,7 +13,7 @@ static bool add_reg(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
     char *endptr;
     int64_t value = ice_strtol(arg + 1, &endptr);
 
-    if (*endptr || value < 0 || value > REG_NUMBER)
+    if (*endptr || value <= 0 || value > REG_NUMBER)
         return false;
     op->type |= REG_CODE << GET_OFFSET(index);
     parser->tmp_size_bits += 1;
