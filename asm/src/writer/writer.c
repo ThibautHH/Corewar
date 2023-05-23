@@ -10,14 +10,6 @@
 #include "ice/string.h"
 #include "corewar/asm.h"
 
-static bool is_index(parser_op_t *op, uint8_t type)
-{
-    return type == DIR_CODE && (!ice_strcmp(op->mnemonic, "zjmp")
-        || !ice_strcmp(op->mnemonic, "ldi")
-        || !ice_strcmp(op->mnemonic, "sti")
-        || !ice_strcmp(op->mnemonic, "fork"));
-}
-
 static bool write_argument(FILE *file, parser_op_t *op)
 {
     bool len = 1;
@@ -45,7 +37,7 @@ static bool write_argument(FILE *file, parser_op_t *op)
 
 static bool write_type(FILE *file, parser_op_t *op)
 {
-    return ((op->type << 2) & 0b11000000) ?
+    return has_coding_byte(op->mnemonic) ?
         fwrite(&op->type, sizeof(uint8_t), 1, file) : true;
 }
 

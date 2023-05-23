@@ -21,7 +21,7 @@ static bool add_reg(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
     if (*endptr || value < 0 || value > REG_NUMBER)
         return false;
     op->type |= T_REG << GET_OFFSET(index);
-    parser->tmp_size_bits += REG_SIZE;
+    parser->tmp_size_bits += 1;
     op->args[index] = value;
     return true;
 }
@@ -33,13 +33,13 @@ static bool add_dir(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
     search_label_t *search_label;
 
     op->type |= T_DIR << GET_OFFSET(index);
-    parser->tmp_size_bits += DIR_SIZE;
+    parser->tmp_size_bits += is_index(op, DIR_CODE) ? IND_SIZE : DIR_SIZE;
     if (arg[1] == LABEL_CHAR) {
         search_label = ice_calloc(1, sizeof(search_label_t));
         if (!search_label)
             return false;
         search_label->name = arg + 2;
-        search_label->index = parser->size_bits + 2;
+        search_label->index = parser->size_bits;
         search_label->ptr = &op->args[index];
         return list_add(parser->search_labels, search_label);
     }

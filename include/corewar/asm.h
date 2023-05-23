@@ -179,4 +179,8 @@ char *get_filename(char *filepath);
 
 void update_token(token_t *token);
 
+bool is_index(parser_op_t *op, uint8_t type);
+
+bool has_coding_byte(char *mnemonic);
+
 #endif /* !COREWAR_ASM_H */

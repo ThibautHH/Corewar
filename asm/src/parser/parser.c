@@ -50,6 +50,7 @@ static parser_op_t *precoder(parser_t *parser, lexer_t *lexer, lexer_op_t *op)
         return NULL;
     precode->mnemonic = op->op.mnemonic;
     precode->code = op->op.code;
+    parser->tmp_size_bits += 1 + has_coding_byte(op->op.mnemonic);
     for (uint8_t i = 0; i < op->op.nbr_args; i++) {
         if (!add_argument(parser, precode, i, op->args[i]))
             return NULL;
