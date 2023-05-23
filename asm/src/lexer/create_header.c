@@ -5,11 +5,9 @@
 ** create_header.c
 */
 
-#include <malloc.h>
-#include <stdbool.h>
-
-#include "corewar/asm.h"
+#include "ice/memory.h"
 #include "ice/string.h"
+#include "corewar/asm.h"
 
 static ssize_t get_string_len(const char *str)
 {
@@ -51,7 +49,7 @@ static bool get_variable(char *dest, char ***lines, char *search)
 
 header_t *create_header(char ***lines)
 {
-    header_t *header = malloc(sizeof(header_t));
+    header_t *header = ice_calloc(1, sizeof(header_t));
 
     return (header
         && get_variable(header->prog_name, lines, NAME_CMD_STRING)
