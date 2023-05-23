@@ -21,6 +21,6 @@ bool create_operator(token_t *token, lexer_op_t **op)
             (*op)->op = op_tab[i];
             return true;
         }
-    free(op);
+    free(*op);
     return false;
 }
