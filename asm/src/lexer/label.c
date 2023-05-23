@@ -13,9 +13,10 @@
 
 static bool is_char_valid(char c, const char *valid_char)
 {
-    for (uint32_t i = 0; valid_char[i]; i++)
+    for (uint32_t i = 0; valid_char[i]; i++) {
         if (valid_char[i] == c)
             return true;
+    }
     return false;
 }
 
@@ -23,10 +24,10 @@ static bool label_is_valid(char *label)
 {
     uint32_t i = 0;
 
-    for (; label[i] != LABEL_CHAR; i++)
+    for (; label[i] && label[i] != LABEL_CHAR; i++)
         if (!is_char_valid(label[i], LABEL_CHARS))
             return false;
-    return is_char_valid(label[++i], SKIPPED_CHARS);
+    return label[i] == LABEL_CHAR;
 }
 
 bool create_label(lexer_t *lexer, token_t *token)

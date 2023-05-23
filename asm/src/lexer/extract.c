@@ -33,8 +33,10 @@ static bool handle_token(lexer_t *lexer, token_t *token)
     if (op) {
         if (!as_separator(op, token))
             return false;
-        op->args[op->arg_count++] =
+        op->args[op->arg_count] =
             ice_strndup(token->str, token->len);
+        if (!op->args[op->arg_count++])
+            return false;
         if (op->arg_count == op->op.nbr_args) {
             list_add(lexer->op, op);
             op = NULL;

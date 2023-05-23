@@ -7,9 +7,9 @@
 
 #include <malloc.h>
 
+#include "ice/string.h"
 #include "ice/memory.h"
 #include "corewar/asm.h"
-#include "ice/string.h"
 
 static bool get_label(parser_t *parser, lexer_t *lexer)
 {
@@ -19,6 +19,7 @@ static bool get_label(parser_t *parser, lexer_t *lexer)
 
     if (!old_label || old_label->len != parser->size)
         return true;
+    parser->size++;
     old_label = list_remove_node(lexer->label, lexer->label->head);
     new_label = ice_calloc(1, sizeof(label_t));
     if (!new_label)

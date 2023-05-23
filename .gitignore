@@ -40,7 +40,7 @@ vgcore.*
 *.bak
 
 # Tests files
-tests/corewar_bins
+!tests/champions/*.cor
 
 # Tests folder
 out

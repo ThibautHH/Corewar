@@ -22,6 +22,7 @@ static bool write_argument(FILE *file, parser_op_t *op)
         if (type == IND_CODE || is_index(op, type)) {
             op->args[i] = ENDIAN((uint16_t)op->args[i]);
             len = fwrite(&op->args[i], IND_SIZE, 1, file);
+            continue;
         }
         if (type == DIR_CODE) {
             op->args[i] = ENDIAN(op->args[i]);
