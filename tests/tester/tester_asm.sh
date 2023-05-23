@@ -1,9 +1,11 @@
 #!/usr/bin/bash
 
+cd "$(dirname "$0")"
 COMPILATION=$(make -sC ../../asm/ re)
+
 if [ $? -ne 0 ]
 then
-    make -sC ../../asm/ re
+    printf "$COMPILATION\n"
     printf "[\033[0;33mCompilation\033[0m][\033[0;31mKO\033[0m]\n"
     exit 1
 else

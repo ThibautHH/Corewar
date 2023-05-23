@@ -26,6 +26,7 @@ $(UNIT_TEST):
 
 tests_run:
 	@$(MAKE) ./lib/ $@
+	@./tests/tester/tester_asm.sh
 
 clean:
 	@for i in $(SRC); do\
