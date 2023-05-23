@@ -38,7 +38,6 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 DIR			+=	$(addprefix $(DIR_SRC), ./print/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				print_debug.c 			\
-				print_debug_vm.c 		\
 				)
 
 DIR			+=	$(addprefix $(DIR_SRC), ./vm/)
