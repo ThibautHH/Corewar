@@ -48,7 +48,8 @@ typedef struct lexer_s {
 } lexer_t;
 
 typedef struct parser_op_s {
-    uint8_t op;
+    char *mnemonic;
+    uint8_t code;
     uint8_t type;
     uint32_t args[MAX_ARGS_NUMBER];
 } parser_op_t;
@@ -70,6 +71,13 @@ typedef struct parser_s {
     uint32_t tmp_size_bits;
     uint32_t size;
 } parser_t;
+
+//static const char *index[] = {
+//    "zjmp",
+//    "ldi",
+//    "sti",
+//    "fork",
+//};
 
 //
 // ASM

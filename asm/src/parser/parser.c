@@ -48,7 +48,8 @@ static parser_op_t *precoder(parser_t *parser, lexer_t *lexer, lexer_op_t *op)
 
     if (!get_label(parser, lexer) || !precode)
         return NULL;
-    precode->op = op->op.code;
+    precode->mnemonic = op->op.mnemonic;
+    precode->code = op->op.code;
     for (uint8_t i = 0; i < op->op.nbr_args; i++) {
         if (!add_argument(parser, precode, i, op->args[i]))
             return NULL;

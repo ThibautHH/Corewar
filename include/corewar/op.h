@@ -54,18 +54,13 @@ typedef struct op_s {
 */
     #define OP_SIZE 1
 
-    #define REG_SIZE 1
-    #define DIR_SIZE 4
     #define IND_SIZE 2
-    #define IDX_SIZE 2
+    #define DIR_SIZE 4
+    #define REG_SIZE DIR_SIZE
 
     #define REG_CODE 1
     #define DIR_CODE 2
     #define IND_CODE 3
-
-    #define TO_REG(x) (uint8_t)x
-    #define TO_DIR(x) (uint32_t)x
-    #define TO_IND(x) (uint16_t)x
 
     #define OP_TAB_SIZE 21
 
