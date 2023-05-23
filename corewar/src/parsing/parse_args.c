@@ -115,7 +115,7 @@ void parse_args(int ac, char **av, vm_t *vm)
     for (int i = 1; i < ac; i++) {
         for (int j = 0; flags[j].flag != NULL; j++)
             v.ret = handle_normal_flag((struct flag_t*)flags, &i, ac, av);
-        if (v.ret == 0) continue;
+        if (v.ret == 0 || !av[i]) continue;
         champion_t *champion = malloc(sizeof(champion_t));
         parse_file(av[i], champion);
         v.current_champion_address = ternary_memory_champion(v, champion);
