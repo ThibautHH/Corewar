@@ -8,10 +8,9 @@
 #include "corewar/corewar.h"
 #include <stdio.h>
 
-#pragma GCC diagnostic ignored "-Wunused-function"
+#ifdef DEBUG
 static void print_vm(UNUSED vm_t *vm)
 {
-    #ifdef DEBUG
         printf(" -- VM -- \n");
         printf("cycle: %ld\n", vm->cycle);
         printf("cycle_to_die: %ld\n", vm->cycle_to_die);
@@ -29,29 +28,27 @@ static void print_vm(UNUSED vm_t *vm)
         }
         printf("\n");
         printf(" -- END MEMORY -- \n");
-    #endif
 }
 
 void print_debug(UNUSED vm_t *vm)
 {
-    #ifdef DEBUG
-        printf(" -- DEBUG -- \n");
-        printf(" -- CHAMPIONS -- \n");
-        champion_t *champion = NULL;
-        TAILQ_FOREACH(champion, &vm->champ_list, entries) {
-            printf("champion name: %s\n", champion->name);
-            printf("champion comment: %s\n", champion->comment);
-            printf("champion size: %d\n", champion->size);
-            printf("champion code: ");
-            for (size_t i = 0; i < champion->size; i++)
-                printf("%02x", champion->code[i]);
-            printf("\n");
-            printf("champion load address: %ld\n", champion->load_address);
-            printf("champion number: %ld\n", champion->number);
-            printf("\n");
-        }
-        printf(" -- END CHAMPIONS -- \n");
-        print_vm(vm);
-        printf(" -- END DEBUG -- \n");
-    #endif
+    printf(" -- DEBUG -- \n");
+    printf(" -- CHAMPIONS -- \n");
+    champion_t *champion = NULL;
+    TAILQ_FOREACH(champion, &vm->champ_list, entries) {
+        printf("champion name: %s\n", champion->name);
+        printf("champion comment: %s\n", champion->comment);
+        printf("champion size: %d\n", champion->size);
+        printf("champion code: ");
+        for (size_t i = 0; i < champion->size; i++)
+            printf("%02x", champion->code[i]);
+        printf("\n");
+        printf("champion load address: %ld\n", champion->load_address);
+        printf("champion number: %ld\n", champion->number);
+        printf("\n");
+    }
+    printf(" -- END CHAMPIONS -- \n");
+    print_vm(vm);
+    printf(" -- END DEBUG -- \n");
 }
+#endif

@@ -42,7 +42,7 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 
 DIR			+=	$(addprefix $(DIR_SRC), ./vm/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
-				pre-vm.c 				\
+				pre_vm.c 				\
 				)
 
 DIR_BUILD	:=	../build/

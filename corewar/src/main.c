@@ -8,13 +8,10 @@
 #include <stdio.h>
 #include "ice/string.h"
 #include "ice/printf.h"
-#include <malloc.h>
 #include "corewar/corewar.h"
 
 void parse_args(int ac, char **av, vm_t *vm);
 void print_debug(vm_t *vm);
-void is_champ_number_already_used(vm_t *vm, int number,
-    champion_t *champion_origin);
 void vm_init(vm_t *vm);
 void pre_vm(vm_t *vm);
 
@@ -44,7 +41,9 @@ int main(int ac, char **av)
         parse_args(ac, av, &vm);
         vm.cycle_to_die = (vm.dump_cycle == 0) ? CYCLE_TO_DIE : vm.dump_cycle;
         pre_vm(&vm);
-        print_debug(&vm);
+        #ifdef DEBUG
+            print_debug(&vm);
+        #endif
     }
     return (0);
 }

@@ -6,6 +6,10 @@
 */
 
 #include "corewar/corewar.h"
+#include "ice/memory.h"
+
+void is_champ_number_already_used(vm_t *vm, int number,
+    champion_t *champion_origin);
 
 void pre_vm(vm_t *vm)
 {
