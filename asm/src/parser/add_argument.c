@@ -6,12 +6,7 @@
 */
 
 #include "ice/int.h"
-#include "ice/memory.h"
 #include "corewar/asm.h"
-
-/*
- * TODO: Label handling
- */
 
 static bool add_reg(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
 {
@@ -30,19 +25,11 @@ static bool add_dir(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
 {
     char *endptr;
     int64_t value;
-    search_label_t *search_label;
 
     op->type |= T_DIR << GET_OFFSET(index);
     parser->tmp_size_bits += is_index(op, DIR_CODE) ? IND_SIZE : DIR_SIZE;
-    if (arg[1] == LABEL_CHAR) {
-        search_label = ice_calloc(1, sizeof(search_label_t));
-        if (!search_label)
-            return false;
-        search_label->name = arg + 2;
-        search_label->index = parser->size_bits;
-        search_label->ptr = &op->args[index];
-        return list_add(parser->search_labels, search_label);
-    }
+    if (arg[1] == LABEL_CHAR)
+        return add_search_label(parser, op, arg + 1, index);
     value = ice_strtol(arg + 1, &endptr);
     if (*endptr)
         return false;
@@ -59,6 +46,8 @@ static bool add_ind(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
         return false;
     op->type |= T_IND << GET_OFFSET(index);
     parser->tmp_size_bits += IND_SIZE;
+    if (arg[0] == LABEL_CHAR)
+        return add_search_label(parser, op, arg, index);
     op->args[index] = value;
     return true;
 }

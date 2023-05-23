@@ -32,6 +32,7 @@ DIR			+=	$(addprefix $(DIR_SRC), parser/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				parser.c			\
 				add_argument.c		\
+				label.c				\
 				is_index.c			\
 				has_coding_byte.c	\
 				)

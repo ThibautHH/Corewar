@@ -183,4 +183,7 @@ bool is_index(parser_op_t *op, uint8_t type);
 
 bool has_coding_byte(char *mnemonic);
 
+bool add_search_label(parser_t *parser, parser_op_t *op, char *arg,
+    uint32_t index);
+
 #endif /* !COREWAR_ASM_H */
