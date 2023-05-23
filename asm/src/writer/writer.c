@@ -43,6 +43,12 @@ static bool write_argument(FILE *file, parser_op_t *op)
     return len > 0;
 }
 
+static bool write_type(FILE *file, parser_op_t *op)
+{
+    return ((op->type << 2) & 0b11000000) ?
+        fwrite(&op->type, sizeof(uint8_t), 1, file) : true;
+}
+
 static bool write_instructions(FILE *file, parser_t *parser)
 {
     parser_op_t *op;
@@ -54,8 +60,7 @@ static bool write_instructions(FILE *file, parser_t *parser)
     for (list_node_t *node = parser->precode->head; node; node = node->next) {
         op = node->value;
         if (!fwrite(&op->code, OP_SIZE, 1, file)
-            || !fwrite(&op->type, sizeof(uint8_t), 1, file)
-            || !write_argument(file, op))
+            || !write_type(file, op) || !write_argument(file, op))
             return false;
     }
     return true;
@@ -73,6 +78,5 @@ bool writer(char *filepath, parser_t *parser)
     file = fopen(filename, "w");
     if (!file)
         return false;
-    return write_instructions(file, parser)
-        && !fclose(file);
+    return write_instructions(file, parser) && !fclose(file);
 }
