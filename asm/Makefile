@@ -35,6 +35,7 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				label.c				\
 				is_index.c			\
 				has_coding_byte.c	\
+				destroy.c			\
 				)
 
 DIR			+=	$(addprefix $(DIR_SRC), writer/)

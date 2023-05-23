@@ -10,9 +10,7 @@
 #include "corewar/asm.h"
 
 /*
- * TODO: Free all the memory
  * TODO: Error handling on the return value
- * TODO: BONUS: See error and the line were occurred
  */
 
 bool asm_f(char *filepath)
@@ -23,5 +21,6 @@ bool asm_f(char *filepath)
     if (!parser || !writer(filepath, parser))
         return false;
     destroy_lexer(lexer);
+    destroy_parser(parser);
     return true;
 }

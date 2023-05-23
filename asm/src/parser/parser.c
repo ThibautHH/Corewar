@@ -71,10 +71,10 @@ parser_t *parser_f(lexer_t *lexer)
         return NULL;
     *parser = (parser_t){lexer->header, list_create(), list_create(),
         list_create(), 0, 0, 0};
-    if (!parser->precode || !parser->labels || !parser->search_labels)
+    if (!parser->ops || !parser->labels || !parser->search_labels)
         return NULL;
     for (list_node_t *node = lexer->op->head; node; node = node->next)
-        if (!list_add(parser->precode, precoder(parser, lexer, node->value)))
+        if (!list_add(parser->ops, precoder(parser, lexer, node->value)))
             return NULL;
     for (list_node_t *node = parser->search_labels->head; node;
         node = node->next)

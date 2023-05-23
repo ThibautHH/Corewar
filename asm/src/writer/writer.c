@@ -46,7 +46,7 @@ static bool write_instructions(FILE *file, parser_t *parser)
     parser->header->prog_size = ENDIAN(parser->size_bits);
     if (!fwrite(parser->header, sizeof(header_t), 1, file))
         return false;
-    for (list_node_t *node = parser->precode->head; node; node = node->next) {
+    for (list_node_t *node = parser->ops->head; node; node = node->next) {
         op = node->value;
         if (!fwrite(&op->code, OP_SIZE, 1, file)
             || !write_type(file, op) || !write_argument(file, op))

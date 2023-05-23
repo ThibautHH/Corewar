@@ -64,7 +64,7 @@ typedef struct search_label_s {
 
 typedef struct parser_s {
     header_t *header;
-    list_t *precode;
+    list_t *ops;
     list_t *labels;
     list_t *search_labels;
     uint32_t size_bits;
@@ -185,5 +185,7 @@ bool has_coding_byte(char *mnemonic);
 
 bool add_search_label(parser_t *parser, parser_op_t *op, char *arg,
     uint32_t index);
+
+void destroy_parser(parser_t *parser);
 
 #endif /* !COREWAR_ASM_H */
