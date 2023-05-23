@@ -17,19 +17,15 @@ static bool write_argument(FILE *file, parser_op_t *op)
 
     for (uint8_t i = 0; i < MAX_ARGS_NUMBER - 1 && len > 0; i++) {
         type = ((op->type << i * 2) & 0b11000000) >> 6;
-        if (type == REG_CODE) {
+        if (type == REG_CODE)
             len = fwrite(&op->args[i], 1, 1, file);
-            continue;
-        }
         if (type == IND_CODE || is_index(op, type)) {
             op->args[i] = ENDIAN((uint16_t)op->args[i]);
             len = fwrite(&op->args[i], IND_SIZE, 1, file);
-            continue;
         }
         if (type == DIR_CODE) {
             op->args[i] = ENDIAN(op->args[i]);
             len = fwrite(&op->args[i], DIR_SIZE, 1, file);
-            continue;
         }
     }
     return len > 0;

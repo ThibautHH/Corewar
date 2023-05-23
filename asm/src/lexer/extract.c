@@ -45,6 +45,19 @@ static bool handle_token(lexer_t *lexer, token_t *token)
         create_label(lexer, token) : create_operator(token, &op);
 }
 
+static bool read_line(lexer_t *lexer, token_t *token)
+{
+    for (; token->str[0] && token->str[0] != COMMENT_CHAR;) {
+        update_token(token);
+        if (token->str[0] == COMMENT_CHAR || token->str[0] == '\0')
+            return true;
+        if (!handle_token(lexer, token))
+            return false;
+        lexer->count++;
+    }
+    return true;
+}
+
 bool extract(lexer_t *lexer, char **lines)
 {
     token_t tmp = (token_t){*lines, 0};
@@ -52,14 +65,8 @@ bool extract(lexer_t *lexer, char **lines)
 
     if (!lexer)
         return false;
-    for (; token->str; token->str = *(lines++)) {
-        for (; token->str[0] && token->str[0] != COMMENT_CHAR;) {
-            update_token(token);
-            if (token->str[0] == COMMENT_CHAR || token->str[0] == '\0')
-                break;
-            handle_token(lexer, token);
-            lexer->count++;
-        }
-    }
+    for (; token->str; token->str = *(lines++))
+        if (!read_line(lexer, token))
+            return false;
     return true;
 }
