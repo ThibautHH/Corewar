@@ -113,7 +113,7 @@ void parse_args(int ac, char **av, vm_t *vm)
         {"-a", &v.address_specified, &v.current_champion_address},
     };
     for (int i = 1; i < ac; i++) {
-        for (int j = 0; flags[j].flag != NULL; j++)
+        for (int j = 0; j < 3; j++)
             v.ret = handle_normal_flag((struct flag_t*)flags, &i, ac, av);
         if (v.ret == 0 || !av[i]) continue;
         champion_t *champion = malloc(sizeof(champion_t));
