@@ -37,7 +37,12 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 
 DIR			+=	$(addprefix $(DIR_SRC), ./print/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
-				print_all_champs.c 		\
+				print_debug.c 			\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), ./vm/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				pre-vm.c 				\
 				)
 
 DIR_BUILD	:=	../build/
