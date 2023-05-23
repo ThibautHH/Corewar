@@ -41,9 +41,7 @@ int main(int ac, char **av)
         parse_args(ac, av, &vm);
         vm.cycle_to_die = (vm.dump_cycle == 0) ? CYCLE_TO_DIE : vm.dump_cycle;
         pre_vm(&vm);
-        #ifdef DEBUG
-            print_debug(&vm);
-        #endif
+        print_debug(&vm);
     }
     return (0);
 }
