@@ -26,7 +26,7 @@ static bool label_is_valid(char *label)
     for (; label[i] && label[i] != LABEL_CHAR; i++)
         if (!is_char_valid(label[i], LABEL_CHARS))
             return false;
-    return label[i] == LABEL_CHAR;
+    return label[i] && i > 0;
 }
 
 bool create_label(lexer_t *lexer, token_t *token)
