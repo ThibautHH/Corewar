@@ -41,6 +41,7 @@ vgcore.*
 
 # Tests files
 !tests/champions/*.cor
+tests/corewar_bins
 
 # Tests folder
 out
