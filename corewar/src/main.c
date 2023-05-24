@@ -41,9 +41,7 @@ int main(int ac, char **av)
         return ((ac < 2) ? 84 : 0);
     }
     vm_init(&vm);
-    TAILQ_INIT(&vm.champ_list);
     parse_args(ac, av, &vm);
-    vm.cycle_to_die = (vm.dump_cycle == 0) ? CYCLE_TO_DIE : vm.dump_cycle;
     pre_vm(&vm);
     #if defined(DEBUG)
         print_debug(&vm);
