@@ -14,6 +14,34 @@ DIR_SRC		:=	src/
 DIR			:=	$(DIR_SRC)
 SRC			:=	$(addprefix $(DIR),\
 				main.c				\
+				asm.c				\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), lexer/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				lexer.c				\
+				token.c				\
+				extract.c			\
+				create_header.c		\
+				destroy.c			\
+				label.c				\
+				operator.c			\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), parser/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				parser.c			\
+				add_argument.c		\
+				label.c				\
+				is_index.c			\
+				has_coding_byte.c	\
+				destroy.c			\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), writer/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				writer.c			\
+				get_filename.c		\
 				)
 
 DIR_BUILD	:=	../build/
@@ -37,7 +65,7 @@ D_ROOT_OBJ	:=	$(addprefix $(DIR_BUILD), debug/obj/$(NAME)/)
 D_OBJ		:=	$(patsubst %.c, $(D_ROOT_OBJ)%.o, $(SRC))
 DIR_OBJ		+=	$(addprefix $(D_ROOT_OBJ), $(DIR))
 
-all:				| $(DIR_OBJ) lib $(NAME)
+all:				$(DIR_OBJ) lib $(NAME)
 
 $(DIR_OBJ):
 	@mkdir -p $(DIR_OBJ)\
@@ -67,7 +95,7 @@ lib_debug:
 
 debug:				CFLAGS += $(DEBUG)
 debug:				OBJ := $(D_OBJ)
-debug:				| lib_debug $(DIR_OBJ) $(D_OBJ) $(NAME)
+debug:				lib_debug $(DIR_OBJ) $(D_OBJ) $(NAME)
 
 clean:
 	@$(MAKE) $@

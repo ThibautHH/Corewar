@@ -15,11 +15,14 @@
     #define IDX_MOD         512u    /* modulo of the index < */
     #define MAX_ARGS_NUMBER 4u      /* this may not be changed 2^*IND_SIZE */
 
+    #define REG_CHAR       'r'      /* character that indicate a register */
+
     #define COMMENT_CHAR   '#'
     #define LABEL_CHAR     ':'
     #define DIRECT_CHAR    '%'
     #define SEPARATOR_CHAR ','
 
+    #define SKIPPED_CHARS " \t\n"
     #define LABEL_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789"
 
     #define NAME_CMD_STRING    ".name"
@@ -46,11 +49,22 @@ typedef struct op_s {
     uint16_t nbr_cycles;
 } op_t;
 
+/*
+** size (in bytes)
+*/
+    #define OP_SIZE 1
+
     #define IND_SIZE 2
     #define DIR_SIZE 4
-    #define REG_SIZE 1
+    #define REG_SIZE DIR_SIZE
 
-static const op_t op_tab[21] = {
+    #define REG_CODE 1
+    #define DIR_CODE 2
+    #define IND_CODE 3
+
+    #define OP_TAB_SIZE 21
+
+static const op_t op_tab[OP_TAB_SIZE] = {
     /*
     ** Mnemonic,
     ** Number of arguments, {
@@ -209,9 +223,9 @@ static const op_t op_tab[21] = {
 
 typedef struct header_s {
     uint32_t magic;
-    char prog_name[PROG_NAME_LENGTH];
-    size_t prog_size;
-    char comment[COMMENT_LENGTH];
+    char prog_name[PROG_NAME_LENGTH + 1];
+    uint32_t prog_size;
+    char comment[COMMENT_LENGTH + 1];
 } header_t;
 
     #define CYCLE_TO_DIE 1536u    // number of cycle before being declared dead
