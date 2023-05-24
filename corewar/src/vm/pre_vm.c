@@ -8,15 +8,14 @@
 #include "corewar/corewar.h"
 #include "ice/memory.h"
 
-void is_champ_number_already_used(vm_t *vm, int number,
-    champion_t *champion_origin);
+void is_champ_number_already_used(champion_t *champ);
 
 void pre_vm(vm_t *vm)
 {
     champion_t *champ = NULL;
 
     TAILQ_FOREACH(champ, &vm->champ_list, entries)
-        is_champ_number_already_used(vm, champ->number, champ);
+        is_champ_number_already_used(champ);
     TAILQ_FOREACH(champ, &vm->champ_list, entries) {
         for (size_t i = 0; i < champ->size; i++)
             vm->memory[(champ->load_address + i) % MEM_SIZE] =
