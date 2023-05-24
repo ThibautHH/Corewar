@@ -13,10 +13,9 @@
 
 static bool is_char_valid(char c, const char *valid_char)
 {
-    for (uint32_t i = 0; valid_char[i]; i++) {
+    for (uint32_t i = 0; valid_char[i]; i++)
         if (valid_char[i] == c)
             return true;
-    }
     return false;
 }
 

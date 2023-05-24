@@ -8,5 +8,5 @@
 
 int main(int ac, char **av)
 {
-    return (ac == 2 && asm_f(av[1])) ? 0 : 84;
+    return (ac == 2 && run_asm(av[1])) ? 0 : 84;
 }

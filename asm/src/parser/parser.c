@@ -63,7 +63,7 @@ static parser_op_t *precoder(parser_t *parser, lexer_t *lexer, lexer_op_t *op)
     return precode;
 }
 
-parser_t *parser_f(lexer_t *lexer)
+parser_t *run_parser(lexer_t *lexer)
 {
     parser_t *parser = ice_calloc(1, sizeof(parser_t));
 

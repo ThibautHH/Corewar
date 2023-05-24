@@ -13,7 +13,7 @@ char *token_skip_chars(char *str)
 
     for (uint32_t i = 0; str[i]; i++) {
         for (j = 0; SKIPPED_CHARS[j] && SKIPPED_CHARS[j] != str[i]; j++);
-        if (SKIPPED_CHARS[j] == '\0')
+        if (!SKIPPED_CHARS[j])
             return str + i;
     }
     str[0] = '\0';

@@ -9,14 +9,10 @@
 
 #include "corewar/asm.h"
 
-/*
- * TODO: Error handling on the return value
- */
-
-bool asm_f(char *filepath)
+bool run_asm(char *filepath)
 {
-    lexer_t *lexer = lexer_f(filepath);
-    parser_t *parser = (lexer) ? parser_f(lexer) : NULL;
+    lexer_t *lexer = run_lexer(filepath);
+    parser_t *parser = (lexer) ? run_parser(lexer) : NULL;
 
     if (!parser || !writer(filepath, parser))
         return false;

@@ -90,7 +90,7 @@ typedef struct parser_s {
  * @return true If the asm worked
  * @return false If the asm failed
  */
-bool asm_f(char *filepath);
+bool run_asm(char *filepath);
 
 //
 // Lexer
@@ -103,7 +103,7 @@ bool asm_f(char *filepath);
  * @param header The header
  * @param filepath The file path
  */
-lexer_t *lexer_f(char *filepath);
+lexer_t *run_lexer(char *filepath);
 
 //
 // Token
@@ -141,7 +141,7 @@ header_t *create_header(char ***lines);
 // Parser
 //
 
-parser_t *parser_f(lexer_t *lexer);
+parser_t *run_parser(lexer_t *lexer);
 
 void destroy_lexer(lexer_t *lexer);
 

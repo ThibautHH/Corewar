@@ -12,10 +12,6 @@
 #include "ice/string.h"
 #include "corewar/asm.h"
 
-/*
- * TODO: Rewrite this function
- */
-
 static char *get_file(char *filepath)
 {
     FILE *file = fopen(filepath, "r");
@@ -47,7 +43,7 @@ lexer_t *create_lexer(char ***lines)
     return (lexer->header && lexer->op && lexer->label) ? lexer : NULL;
 }
 
-lexer_t *lexer_f(char *filepath)
+lexer_t *run_lexer(char *filepath)
 {
     char *file = get_file(filepath);
     char **lines = (file) ? ice_strsplit(file, "\n") : NULL;

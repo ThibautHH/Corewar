@@ -22,7 +22,7 @@
     #define DIRECT_CHAR    '%'
     #define SEPARATOR_CHAR ','
 
-    #define SKIPPED_CHARS " \t\n\0"
+    #define SKIPPED_CHARS " \t\n"
     #define LABEL_CHARS "abcdefghijklmnopqrstuvwxyz_0123456789"
 
     #define NAME_CMD_STRING    ".name"
@@ -222,9 +222,9 @@ static const op_t op_tab[OP_TAB_SIZE] = {
     #define COREWAR_EXEC_MAGIC 0xea83f3u
 
 typedef struct header_s {
-    int magic;
+    uint32_t magic;
     char prog_name[PROG_NAME_LENGTH + 1];
-    int prog_size;
+    uint32_t prog_size;
     char comment[COMMENT_LENGTH + 1];
 } header_t;
 
