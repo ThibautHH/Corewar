@@ -44,4 +44,5 @@ void champion_init(vm_t *vm, var_t *v, char *file)
         % MEM_SIZE;
     TAILQ_INIT(&champion->process_list);
     TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
+    vm->nb_champ++;
 }
