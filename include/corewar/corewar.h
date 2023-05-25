@@ -30,7 +30,7 @@ typedef uint16_t u16_t;
 
 typedef struct register_s {
     uint8_t reg[REG_SIZE];
-} my_register_t;
+    #define LAST_CHAMP (TAILQ_LAST(&vm->champ_list, champions_s))
 
 typedef struct process_s {
     TAILQ_ENTRY(process_s) entries;
@@ -51,7 +51,7 @@ typedef struct champion_s {
 } champion_t;
 
 typedef struct vm_s {
-    TAILQ_HEAD(, champion_s) champ_list;
+    TAILQ_HEAD(champions_s, champion_s) champ_list;
     uint8_t memory[MEM_SIZE];
     size_t cycle;
     size_t cycle_to_die;
@@ -67,12 +67,5 @@ typedef struct flag_s {
     bool *boolean;
     size_t *value;
 } flag_t;
-
-typedef struct var_s {
-    size_t current_champion_address;
-    uint16_t current_champion_number;
-    bool address_specified;
-    bool is_flag;
-} var_t;
 
 #endif /* !COREWAR_COREWAR_H */

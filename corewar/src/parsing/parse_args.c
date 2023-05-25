@@ -15,7 +15,7 @@
 #include "corewar/corewar.h"
 
 uint16_t get_next_nb(vm_t *vm);
-void champion_init(vm_t *vm, var_t *v, char *file);
+void champion_init(vm_t *vm, uint16_t nb, char *file);
 
 static unsigned long my_strtoul(const char * const nptr,
     const char * * const endptr)
@@ -69,20 +69,24 @@ static bool handle_flag(const flag_t *flag, int *i, char **av)
 
 void parse_args(int ac, char **av, vm_t *vm)
 {
-    var_t v = {0, 1, false, false};
+    size_t champion_address = 0;
+    uint16_t champion_number = 1;
+    bool address_specified = false, is_flag = false;
     const flag_t flags[FLAG_COUNT] = {
         {"-dump", &vm->dump, &vm->dump_cycle},
-        {"-n", NULL, (size_t *)&v.current_champion_number},
-        {"-a", &v.address_specified, &v.current_champion_address},
+        {"-n", NULL, (size_t *)&champion_number},
+        {"-a", &address_specified, &champion_address},
     };
 
     for (int i = 1; i < ac; i++) {
-        for (uint8_t j = 0; v.is_flag && j < FLAG_COUNT; j++)
-            v.is_flag = handle_flag(&(flags[j]), &i, av);
-        if (v.is_flag)
+        for (uint8_t j = 0; is_flag && j < FLAG_COUNT; j++)
+            is_flag = handle_flag(&(flags[j]), &i, av);
+        if (is_flag)
             continue;
-        champion_init(vm, &v, av[i]);
-        v.current_champion_number = get_next_nb(vm);
-        v.address_specified = false;
+        champion_init(vm, champion_number, av[i]);
+        LAST_CHAMP->load_address = (champion_address +
+            ((address_specified) ? 0 : LAST_CHAMP->size)) % MEM_SIZE;
+        champion_number = get_next_nb(vm);
+        address_specified = false;
     }
 }

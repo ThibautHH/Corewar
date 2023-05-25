@@ -31,17 +31,14 @@ static void parse_file(char *filename, champion_t *champion)
     fclose(file);
 }
 
-void champion_init(vm_t *vm, var_t *v, char *file)
+void champion_init(vm_t *vm, uint16_t nb, char *file)
 {
     champion_t *champion = malloc(sizeof(champion_t));
 
     if (!champion)
         exit(84);
     parse_file(file, champion);
-    champion->number = v->current_champion_number;
-    champion->load_address = (v->current_champion_address +
-        ((v->address_specified) ? 0 : champion->size))
-        % MEM_SIZE;
+    champion->number = nb;
     TAILQ_INIT(&champion->process_list);
     TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
     vm->nb_champ++;
