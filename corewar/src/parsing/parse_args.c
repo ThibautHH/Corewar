@@ -27,7 +27,7 @@ static unsigned long my_strtoul(const char * const nptr,
     register int c = *s++;
     register signed char any;
 
-    while (isspace(c) || c == '+');
+    while (isspace(c) || c == '+')
         c = *s++;
     for (acc = 0, any = 0; isdigit(c) && ((c -= '0') < 10); c = *s++)
         if (any < 0 || acc > cutoff || (acc == cutoff && c > cutlim))
