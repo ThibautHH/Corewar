@@ -30,7 +30,7 @@ void print_vm(vm_t *vm)
         printf(" -- END MEMORY -- \n");
 }
 
-void print_debug(UNUSED vm_t *vm)
+void print_debug(vm_t *vm)
 {
         printf(" -- DEBUG -- \n");
         printf(" -- CHAMPIONS -- \n");
