@@ -8,122 +8,81 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
+#include <ctype.h>
 #include "ice/string.h"
 #include "ice/int.h"
 #include "ice/printf.h"
 #include "corewar/corewar.h"
 
-#ifndef CHAMPION_INIT
-    #ifndef CHAMPION_INFO
-    struct champion_info_s {
-        char *name;
-        char *comment;
-        size_t size;
-        uint8_t *code;
-        size_t load_address;
-        size_t number;
-    };
-    #endif /* !CHAMPION_INFO */
+uint16_t get_next_nb(vm_t *vm);
+void champion_init(vm_t *vm, var_t *v, char *file);
 
-void champion_init(champion_t *champion, struct champion_info_s *info);
-#endif /* !CHAMPION_INIT */
-
-#ifndef PARSING
-    #ifndef FLAG_STRUCT
-    struct flag_t {
-        char *flag;
-        bool *boolean;
-        size_t *value;
-    };
-    #endif /* !FLAG_STRUCT */
-
-    #ifndef VAR_STRUCT
-    struct var_t {
-        size_t current_champion_address;
-        int current_champion_number;
-        bool address_specified;
-        int ret;
-    };
-    #endif /* !VAR_STRUCT */
-#endif /* !PARSING */
-
-bool is_nbr(char *str);
-int get_smallest_cham_nb(vm_t *vm);
-
-static void parse_file(char *filename, champion_t *champion)
+static unsigned long my_strtoul(const char * const nptr,
+    const char * * const endptr)
 {
-    FILE *file = fopen(filename, "rb");
-    if (file == NULL) exit(84);
-    uint32_t magic;
-    fread(&magic, sizeof(magic), 1, file);
-    magic = ENDIAN(magic);
-    if (magic != COREWAR_EXEC_MAGIC) exit(84);
-    champion->name = malloc(PROG_NAME_LENGTH + 1);
-    fread(champion->name, PROG_NAME_LENGTH, 1, file);
-    champion->name[PROG_NAME_LENGTH] = '\0';
-    fseek(file, 4, SEEK_CUR);
-    fread(&champion->size, sizeof(champion->size), 1, file);
-    champion->size = (size_t)ENDIAN(champion->size);
-    champion->comment = malloc(COMMENT_LENGTH + 1);
-    fread(champion->comment, COMMENT_LENGTH, 1, file);
-    champion->comment[COMMENT_LENGTH] = '\0';
-    fseek(file, 4, SEEK_CUR);
-    champion->code = malloc(champion->size);
-    fread(champion->code, champion->size, 1, file);
-    fclose(file);
+    static const unsigned long cutoff = ((long)(~0UL)) / 10UL;
+    static const int cutlim = cutoff % 10UL;
+	register const char *s = nptr;
+	register unsigned long acc;
+	register int c = *s++;
+    register signed char any;
+
+	while (isspace(c) || c == '+');
+        c = *s++;
+	for (acc = 0, any = 0; isdigit(c) && ((c -= '0') < 10UL); c = *s++)
+		if (any < 0 || acc > cutoff || (acc == cutoff && c > cutlim))
+			any = -1;
+		else {
+			any = 1;
+			acc = acc * 10UL + c;
+		}
+	if (endptr)
+		*endptr = (char *)(any ? s - 1 : nptr);
+	return ((any >= 0) ? acc : ((long)(~0UL)));
 }
 
-static void error_flag(char *flag)
+static void flag_error(char *flag)
 {
-    char *error_message = "Error: invalid flag usage: ";
-    fwrite(error_message, 1, ice_strlen(error_message), stderr);
-    fwrite(flag, 1, ice_strlen(flag), stderr);
-    fwrite("\n", 1, 1, stderr);
+    static const char error_message[] = "Error: invalid flag usage: ";
+
+    fwrite(error_message, sizeof(error_message), 1, stderr);
+    fwrite(flag, sizeof(char), ice_strlen(flag), stderr);
+    fwrite("\n", sizeof(char), 1, stderr);
     exit(84);
 }
 
-static int handle_normal_flag(struct flag_t *flags,
-    int *i, int ac, char **av)
+static bool handle_normal_flag(flag_t *flag, int *i, char **av)
 {
-    for (int j = 0; j < 3; j++) {
-        if (!ice_strcmp(av[*i], flags[j].flag)) {
-            (flags[j].boolean) ? *flags[j].boolean = true : 0;
-            (*i + 1 >= ac || !is_nbr(av[*i + 1]))
-                ? error_flag(flags[j].flag) : 0;
-            *flags[j].value = ice_atoi(av[*i + 1]);
-            *i += 2;
-            return (0);
-        }
-    }
-    return (1);
-}
+    const char *endptr;
 
-static size_t ternary_memory_champion(struct var_t v, champion_t *champion)
-{
-    return (!v.address_specified) ? (v.current_champion_address +
-            champion->size) % MEM_SIZE : v.current_champion_address % MEM_SIZE;
+    if (ice_strcmp(av[*i], flag->flag))
+        return false;
+    if (flag->boolean)
+        *(flag->boolean) = true;
+    if (!av[*i + 1])
+        flag_error(flag->flag);
+    *(flag->value) = my_strtoul(av[*i + 1], &endptr);
+    if (*endptr)
+        flag_error(flag->flag);
+    return ((*i)++);
 }
 
 void parse_args(int ac, char **av, vm_t *vm)
 {
-    struct var_t v = {0, 1, false, 0};
-    struct { char *flag; bool *boolean; void *value; } flags[] = {
+    var_t v = {0, 1, false, false};
+    const flag_t flags[FLAG_COUNT] = {
         {"-dump", &vm->dump, &vm->dump_cycle},
         {"-n", NULL, &v.current_champion_number},
         {"-a", &v.address_specified, &v.current_champion_address},
     };
+
     for (int i = 1; i < ac; i++) {
-        for (int j = 0; j < 3; j++)
-            v.ret = handle_normal_flag((struct flag_t*)flags, &i, ac, av);
-        if (v.ret == 0 || !av[i]) continue;
-        champion_t *champion = malloc(sizeof(champion_t));
-        parse_file(av[i], champion);
-        v.current_champion_address = ternary_memory_champion(v, champion);
-        champion_init(champion, (struct champion_info_s[]){{champion->name,
-            champion->comment, champion->size, champion->code,
-            v.current_champion_address, v.current_champion_number}});
-        TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
-        v.current_champion_number = get_smallest_cham_nb(vm);
+        for (uint8_t j = 0; v.is_flag && j < FLAG_COUNT; j++)
+            v.is_flag = handle_flag(&(flags[j]), &i, av);
+        if (v.is_flag)
+            continue;
+        champion_init(vm, &v, av[i]);
+        v.current_champion_number = get_next_nb(vm);
         v.address_specified = false;
     }
 }

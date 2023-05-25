@@ -15,6 +15,8 @@
 
     #define UNUSED __attribute__((unused))
 
+    #define FLAG_COUNT 3u
+
     #define IS_NUM(c) (c >= '0' && c <= '9')
 
     #define END32_CENTRE(x) ((((x) & 0xFF00) << 8) | (((x) >> 8) & 0xFF00))
@@ -39,12 +41,12 @@ typedef struct process_s {
 
 typedef struct champion_s {
     TAILQ_ENTRY(champion_s) entries;
-    char *name;
-    char *comment;
-    __uint32_t size;
+    char name[PROG_NAME_LENGTH + 1];
+    char comment[COMMENT_LENGTH + 1];
+    uint32_t size;
     uint8_t *code;
     size_t load_address;
-    size_t number;
+    uint16_t number;
     TAILQ_HEAD(, process_s) process_list;
 } champion_t;
 
@@ -59,5 +61,18 @@ typedef struct vm_s {
     bool dump;
     size_t dump_cycle;
 } vm_t;
+
+typedef struct flag_s {
+    char *flag;
+    bool *boolean;
+    size_t *value;
+} flag_t;
+
+typedef struct var_s {
+    size_t current_champion_address;
+    uint16_t current_champion_number;
+    bool address_specified;
+    bool is_flag;
+} var_t;
 
 #endif /* !COREWAR_COREWAR_H */

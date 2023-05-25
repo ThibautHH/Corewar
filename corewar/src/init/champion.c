@@ -5,29 +5,43 @@
 ** champion
 */
 
+#include <stdio.h>
 #include "corewar/corewar.h"
 #include "ice/memory.h"
 #include "ice/string.h"
 
-#ifndef CHAMPION_INFO
-struct champion_info_s {
-    char *name;
-    char *comment;
-    size_t size;
-    uint8_t *code;
-    size_t load_address;
-    size_t number;
-};
-#endif /* !CHAMPION_INFO */
-
-void champion_init(champion_t *champion, struct champion_info_s *info)
+static void parse_file(char *filename, champion_t *champion)
 {
-    champion->name = ice_strdup(info->name);
-    champion->comment = ice_strdup(info->comment);
-    champion->size = info->size;
-    champion->code = malloc(info->size);
-    ice_memcpy(champion->code, info->code, info->size);
-    champion->load_address = info->load_address;
-    champion->number = info->number;
+    FILE *file = fopen(filename, "rb");
+    uint32_t magic;
+
+    if (file == NULL)
+        exit(84);
+    fread(&magic, sizeof(uint32_t), 1, file);
+    if (ENDIAN(magic) != COREWAR_EXEC_MAGIC) {
+        fwrite("Error: file isn't a corewar binary\n", 1, 36, stderr);
+        exit(84);
+    }
+    fread(champion->name, sizeof(char[PROG_NAME_LENGTH + 1]), 1, file);
+    fread(&champion->size, sizeof(uint32_t), 1, file);
+    champion->size = ENDIAN(champion->size);
+    fread(champion->comment, sizeof(char[COMMENT_LENGTH + 1]), 1, file);
+    champion->code = malloc(champion->size);
+    fread(champion->code, 1, champion->size, file);
+    fclose(file);
+}
+
+void champion_init(vm_t *vm, var_t *v, char *file)
+{
+    champion_t *champion = malloc(sizeof(champion_t));
+
+    if (!champion)
+        exit(84);
+    parse_file(file, champion);
+    champion->number = v->current_champion_number;
+    champion->load_address = (v->current_champion_address +
+        ((v->address_specified) ? 0 : champion->size))
+        % MEM_SIZE;
     TAILQ_INIT(&champion->process_list);
+    TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
 }
