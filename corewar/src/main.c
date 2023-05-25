@@ -43,5 +43,8 @@ int main(int ac, char **av)
     vm_init(&vm);
     parse_args(ac, av, &vm);
     vm_setup(&vm);
+#if defined(DEBUG)
+    print_debug(&vm);
+#endif
     return (0);
 }
