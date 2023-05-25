@@ -62,7 +62,7 @@ typedef struct op_s {
     #define DIR_CODE 2
     #define IND_CODE 3
 
-    #define OP_TAB_SIZE 21
+    #define OP_TAB_SIZE 16
 
 static const op_t op_tab[OP_TAB_SIZE] = {
     /*
