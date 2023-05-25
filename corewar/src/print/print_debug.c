@@ -44,7 +44,7 @@ void print_debug(vm_t *vm)
                 printf("%02x", champion->code[i]);
             printf("\n");
             printf("champion load address: %ld\n", champion->load_address);
-            printf("champion number: %ld\n", champion->number);
+            printf("champion number: %hu\n", champion->number);
             printf("\n");
         }
         printf(" -- END CHAMPIONS -- \n");
