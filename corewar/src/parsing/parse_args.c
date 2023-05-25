@@ -20,8 +20,8 @@ void champion_init(vm_t *vm, var_t *v, char *file);
 static unsigned long my_strtoul(const char * const nptr,
     const char * * const endptr)
 {
-    static const unsigned long cutoff = ((long)(~0UL)) / 10UL;
-    static const int cutlim = cutoff % 10UL;
+    static const unsigned long cutoff = ((unsigned long)(~0UL)) / 10UL;
+    static const int cutlim = ((unsigned long)(~0UL)) % 10UL;
 	register const char *s = nptr;
 	register unsigned long acc;
 	register int c = *s++;
@@ -29,7 +29,7 @@ static unsigned long my_strtoul(const char * const nptr,
 
 	while (isspace(c) || c == '+');
         c = *s++;
-	for (acc = 0, any = 0; isdigit(c) && ((c -= '0') < 10UL); c = *s++)
+	for (acc = 0, any = 0; isdigit(c) && ((c -= '0') < 10); c = *s++)
 		if (any < 0 || acc > cutoff || (acc == cutoff && c > cutlim))
 			any = -1;
 		else {
@@ -38,7 +38,7 @@ static unsigned long my_strtoul(const char * const nptr,
 		}
 	if (endptr)
 		*endptr = (char *)(any ? s - 1 : nptr);
-	return ((any >= 0) ? acc : ((long)(~0UL)));
+	return ((any >= 0) ? acc : ((unsigned long)(~0UL)));
 }
 
 static void flag_error(char *flag)
