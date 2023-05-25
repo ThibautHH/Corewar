@@ -30,11 +30,6 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				vm.c					\
 				)
 
-DIR			+=	$(addprefix $(DIR_SRC), ./utils/)
-SRC			+=	$(addprefix $(lastword $(DIR)),\
-				is_nbr.c				\
-				)
-
 DIR			+=	$(addprefix $(DIR_SRC), ./print/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				print_debug.c 			\
