@@ -51,7 +51,7 @@ static void flag_error(char *flag)
     exit(84);
 }
 
-static bool handle_normal_flag(flag_t *flag, int *i, char **av)
+static bool handle_flag(const flag_t *flag, int *i, char **av)
 {
     const char *endptr;
 
@@ -72,7 +72,7 @@ void parse_args(int ac, char **av, vm_t *vm)
     var_t v = {0, 1, false, false};
     const flag_t flags[FLAG_COUNT] = {
         {"-dump", &vm->dump, &vm->dump_cycle},
-        {"-n", NULL, &v.current_champion_number},
+        {"-n", NULL, (size_t *)&v.current_champion_number},
         {"-a", &v.address_specified, &v.current_champion_address},
     };
 
