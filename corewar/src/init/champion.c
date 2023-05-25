@@ -27,6 +27,8 @@ static void parse_file(char *filename, champion_t *champion)
     champion->size = ENDIAN(champion->size);
     fread(champion->comment, sizeof(char[COMMENT_LENGTH + 1]), 1, file);
     champion->code = malloc(champion->size);
+    if (!champion->code)
+        exit(84);
     fread(champion->code, 1, champion->size, file);
     fclose(file);
 }
