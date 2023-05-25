@@ -19,7 +19,7 @@
 
     #define IS_NUM(c) (c >= '0' && c <= '9')
 
-    #define END32_CENTRE(x) ((((x) & 0xFF00) << 8) | (((x) >> 8) & 0xFF00))
+    #define END32_CENTRE(x) (((x) & 0xFF00) << 8) | (((x) >> 8) & 0xFF00)
     #define END32(x) ((x) << 24 | END32_CENTRE(x) | (x) >> 24)
     #define END16(x) ((x) << 8 | (x) >> 8)
 
