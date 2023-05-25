@@ -39,9 +39,9 @@ void champion_init(champion_t *champion, struct champion_info_s *info);
 
     #ifndef VAR_STRUCT
     struct var_t {
-        size_t current_champion_address;
-        int current_champion_number;
-        bool address_specified;
+        size_t champ_address;
+        int curr_champ_nb;
+        bool a_spec;
         int ret;
     };
     #endif /* !VAR_STRUCT */
@@ -98,32 +98,26 @@ static int handle_normal_flag(struct flag_t *flags,
     return (1);
 }
 
-static size_t ternary_memory_champion(struct var_t v, champion_t *champion)
-{
-    return (!v.address_specified) ? (v.current_champion_address +
-            champion->size) % MEM_SIZE : v.current_champion_address % MEM_SIZE;
-}
-
 void parse_args(int ac, char **av, vm_t *vm)
 {
     struct var_t v = {0, 1, false, 0};
     struct { char *flag; bool *boolean; void *value; } flags[] = {
         {"-dump", &vm->dump, &vm->dump_cycle},
-        {"-n", NULL, &v.current_champion_number},
-        {"-a", &v.address_specified, &v.current_champion_address},
+        {"-n", NULL, &v.curr_champ_nb},
+        {"-a", &v.a_spec, &v.champ_address}
     };
     for (int i = 1; i < ac; i++) {
-        for (int j = 0; flags[j].flag != NULL; j++)
+        for (int j = 0; j < 3; j++)
             v.ret = handle_normal_flag((struct flag_t*)flags, &i, ac, av);
         if (v.ret == 0) continue;
         champion_t *champion = malloc(sizeof(champion_t));
         parse_file(av[i], champion);
-        v.current_champion_address = ternary_memory_champion(v, champion);
+        v.champ_address = (v.a_spec) ? v.champ_address : -1;
         champion_init(champion, (struct champion_info_s[]){{champion->name,
             champion->comment, champion->size, champion->code,
-            v.current_champion_address, v.current_champion_number}});
+            v.champ_address, v.curr_champ_nb}});
         TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
-        v.current_champion_number = get_smallest_cham_nb(vm);
-        v.address_specified = false;
+        v.curr_champ_nb = get_smallest_cham_nb(vm);
+        v.a_spec = false;
     }
 }

@@ -43,7 +43,7 @@ typedef struct champion_s {
     char *comment;
     __uint32_t size;
     uint8_t *code;
-    size_t load_address;
+    ssize_t load_address;
     size_t number;
     TAILQ_HEAD(, process_s) process_list;
 } champion_t;
