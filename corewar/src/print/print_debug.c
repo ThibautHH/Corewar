@@ -14,7 +14,7 @@ void print_vm(vm_t *vm)
         printf(" -- VM -- \n");
         printf("cycle: %ld\n", vm->cycle);
         printf("cycle_to_die: %ld\n", vm->cycle_to_die);
-        printf("nb_live: %ld\n", vm->nb_live);
+        printf("live_call_count: %ld\n", vm->live_call_count);
         printf("nb_process: %ld\n", vm->nb_process);
         printf("nb_champ: %ld\n", vm->nb_champ);
         printf("dump: %d\n", vm->dump);

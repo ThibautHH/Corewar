@@ -17,7 +17,12 @@
 
     #define FLAG_COUNT 3u
 
-    #define IS_NUM(c) (c >= '0' && c <= '9')
+    #define SMCLN ;
+    #define TQFSIT(v, f, t)   (v) = (t)
+    #define TQFSCND2(v, f, t) ((t) = TAILQ_NEXT(v, f), 1)
+    #define TQFSCND(v, h, f, t) (v) && TQFSCND2(v, f, t)SMCLN TQFSIT(v, f, t)
+    #define TQFS(v, h, f, t) (v) = TAILQ_FIRST(h)SMCLN TQFSCND(v, h, f, t)
+    #define	TAILQ_FOREACH_SAFE(v, h, f, t) for (TQFS(v, h, f, t))
 
     #define END32_CENTRE(x) (((x) & 0xFF00) << 8) | (((x) >> 8) & 0xFF00)
     #define END32(x) ((x) << 24 | END32_CENTRE(x) | (x) >> 24)
@@ -36,6 +41,7 @@ typedef struct process_s {
         uint8_t bytes[REG_SIZE];
     } regs[REG_NUMBER];
     uint8_t carry;
+    uint16_t cycles_left;
 } process_t;
 
 typedef struct champion_s {
@@ -46,6 +52,7 @@ typedef struct champion_s {
     uint8_t *code;
     size_t load_address;
     uint16_t number;
+    bool alive;
     TAILQ_HEAD(, process_s) process_list;
 } champion_t;
 
@@ -54,12 +61,14 @@ typedef struct vm_s {
     uint8_t memory[MEM_SIZE];
     size_t cycle;
     size_t cycle_to_die;
-    size_t nb_live;
+    size_t live_call_count;
     size_t nb_process;
     size_t nb_champ;
     bool dump;
     size_t dump_cycle;
 } vm_t;
+
+typedef void (*instruction_t)(vm_t *, champion_t *, process_t *);
 
 typedef struct flag_s {
     char *flag;

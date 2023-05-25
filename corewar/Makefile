@@ -22,6 +22,16 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 				get_smallest_cham_nb.c	\
 				)
 
+DIR			+=	$(addprefix $(DIR_SRC), ./execution/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				execute_instruction.c	\
+				)
+
+DIR			+=	$(addprefix $(DIR_SRC), ./instructions/)
+SRC			+=	$(addprefix $(lastword $(DIR)),\
+				live.c					\
+				)
+
 DIR			+=	$(addprefix $(DIR_SRC), ./init/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				champion.c				\
@@ -37,6 +47,7 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 DIR			+=	$(addprefix $(DIR_SRC), ./vm/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				vm_setup.c 				\
+				run_vm.c 				\
 				)
 
 DIR_BUILD	:=	../build/

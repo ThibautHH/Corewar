@@ -12,10 +12,11 @@
 
 void parse_args(int ac, char **av, vm_t *vm);
 #if defined(DEBUG)
-    void print_debug(vm_t *vm);
+void print_debug(vm_t *vm);
 #endif
 void vm_init(vm_t *vm);
 void vm_setup(vm_t *vm);
+void run_vm(vm_t *vm);
 
 static const char help_message[] = "USAGE\n"
     "./corewar "
@@ -46,5 +47,6 @@ int main(int ac, char **av)
 #if defined(DEBUG)
     print_debug(&vm);
 #endif
+    run_vm(&vm);
     return (0);
 }
