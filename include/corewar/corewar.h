@@ -28,15 +28,17 @@ typedef uint16_t u16_t;
 
     #define ENDIAN(x) (_Generic ((x), u32_t : END32(x), u16_t : END16(x)))
 
-typedef struct register_s {
-    uint8_t reg[REG_SIZE];
+    #define PROC_REG(p, n) (*((uint32_t *)(&((p)->regs[(n) - 1]))))
+
     #define LAST_CHAMP (TAILQ_LAST(&vm->champ_list, champions_s))
 
 typedef struct process_s {
     TAILQ_ENTRY(process_s) entries;
+    uint8_t *pc;
+    struct {
+        uint8_t bytes[REG_SIZE];
+    } regs[REG_NUMBER];
     uint8_t carry;
-    size_t pc;
-    my_register_t reg[REG_NUMBER];
 } process_t;
 
 typedef struct champion_s {
