@@ -48,7 +48,7 @@ static void prev_swap(vm_t *vm, champion_t *i, bool *swapped)
 static void sort_champions(vm_t *vm)
 {
     bool swapped = 1;
-    for (champion_t *first = FIRST_CHAMP, *last = LAST_CHAMP, *tmp;
+    for (champion_t *first = FIRST_CHAMP, *last = LAST_CHAMP;
         swapped; first = TAILQ_NEXT(first, entries)) {
         swapped = 0;
         for (champion_t *i = first; i != last; i = TAILQ_NEXT(i, entries))
