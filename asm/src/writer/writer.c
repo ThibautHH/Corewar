@@ -8,6 +8,7 @@
 #include <stdio.h>
 
 #include "ice/string.h"
+#include "ice/printf.h"
 #include "corewar/asm.h"
 
 static bool write_argument(FILE *file, parser_op_t *op)
@@ -63,7 +64,7 @@ bool writer(char *filepath, parser_t *parser)
     filepath = get_filename(filepath);
     if (!filepath)
         return false;
-    sprintf(filename, "%s.cor", filepath);
+    ice_sprintf(filename, "%s.cor", filepath);
     file = fopen(filename, "w");
     if (!file)
         return false;
