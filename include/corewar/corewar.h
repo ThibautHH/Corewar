@@ -22,11 +22,7 @@
     #define END32_CENTRE(x) (((x) & 0xFF00) << 8) | (((x) >> 8) & 0xFF00)
     #define END32(x) ((x) << 24 | END32_CENTRE(x) | (x) >> 24)
     #define END16(x) ((x) << 8 | (x) >> 8)
-
-typedef uint32_t u32_t;
-typedef uint16_t u16_t;
-
-    #define ENDIAN(x) (_Generic ((x), u32_t : END32(x), u16_t : END16(x)))
+    #define END(x) (_Generic ((x), uint32_t : END32(x), uint16_t : END16(x)))
 
     #define PROC_REG(p, n) (*((uint32_t *)(&((p)->regs[(n) - 1]))))
 

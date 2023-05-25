@@ -18,13 +18,13 @@ static void parse_file(char *filename, champion_t *champion)
     if (file == NULL)
         exit(84);
     fread(&magic, sizeof(uint32_t), 1, file);
-    if (ENDIAN(magic) != COREWAR_EXEC_MAGIC) {
+    if (END(magic) != COREWAR_EXEC_MAGIC) {
         fwrite("Error: file isn't a corewar binary\n", 1, 36, stderr);
         exit(84);
     }
     fread(champion->name, sizeof(char[PROG_NAME_LENGTH + 1]), 1, file);
     fread(&champion->size, sizeof(uint32_t), 1, file);
-    champion->size = ENDIAN(champion->size);
+    champion->size = END(champion->size);
     fread(champion->comment, sizeof(char[COMMENT_LENGTH + 1]), 1, file);
     champion->code = malloc(champion->size);
     if (!champion->code)
