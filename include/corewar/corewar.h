@@ -30,6 +30,7 @@ typedef uint16_t u16_t;
 
     #define PROC_REG(p, n) (*((uint32_t *)(&((p)->regs[(n) - 1]))))
 
+    #define FIRST_CHAMP (TAILQ_FIRST(&vm->champ_list))
     #define LAST_CHAMP (TAILQ_LAST(&vm->champ_list, champions_s))
 
 typedef struct process_s {

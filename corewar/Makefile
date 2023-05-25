@@ -19,7 +19,6 @@ SRC			:=	$(addprefix $(DIR),		\
 DIR			+=	$(addprefix $(DIR_SRC), ./parsing/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				parse_args.c			\
-				error_handling.c		\
 				get_smallest_cham_nb.c	\
 				)
 
@@ -37,7 +36,7 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 
 DIR			+=	$(addprefix $(DIR_SRC), ./vm/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
-				pre_vm.c 				\
+				vm_setup.c 				\
 				)
 
 DIR_BUILD	:=	../build/
