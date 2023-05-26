@@ -43,5 +43,5 @@ void run_vm(vm_t *vm)
         }
     }
     champ = TAILQ_FIRST(&vm->champ_list);
-    ice_printf("The player %hu(%s)has won.\n", champ->number, champ->name);
+    ice_printf("The player %u(%s)has won.\n", (uint32_t)champ->number, champ->name);
 }
