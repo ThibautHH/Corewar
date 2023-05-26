@@ -24,18 +24,19 @@ static unsigned long my_strtoul(const char * const nptr,
     static const int cutlim = ((unsigned long)(~0UL)) % 10UL;
     register const char *s = nptr;
     register unsigned long acc;
-    register int c = *s++;
+    register int c;
     register signed char any;
 
-    while (isspace(c) || c == '+')
+    if (!nptr)
+        return (unsigned long)(endptr ? (*endptr = nptr) : 0UL);
+    do
         c = *s++;
+    while (isspace(c) || c == '+');
     for (acc = 0, any = 0; isdigit(c) && ((c -= '0') < 10); c = *s++)
         if (any < 0 || acc > cutoff || (acc == cutoff && c > cutlim))
             any = -1;
-        else {
-            any = 1;
-            acc = acc * 10UL + c;
-        }
+        else
+            any = ((acc = acc * 10UL + c), 1);
     if (endptr)
         *endptr = (char *)(any ? s - 1 : nptr);
     return ((any >= 0) ? acc : ((unsigned long)(~0UL)));
