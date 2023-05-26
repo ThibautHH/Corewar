@@ -45,12 +45,12 @@ void kill_process(vm_t *vm, champion_t *champ, process_t *process)
 
 void execute_instructon(vm_t *vm, champion_t *champ, process_t *process)
 {
-    if (*process->pc >= OP_TAB_SIZE)
+    if ((*process->pc - 1) >= OP_TAB_SIZE)
         kill_process(vm, champ, process);
     if (process->cycles_left) {
         process->cycles_left--;
         return;
     }
     process->cycles_left = op_tab[*process->pc].nbr_cycles;
-    instructions[*(process->pc++)](vm, champ, process);
+    instructions[*(process->pc++) - 1](vm, champ, process);
 }
