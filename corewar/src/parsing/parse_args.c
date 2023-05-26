@@ -42,29 +42,22 @@ static unsigned long my_strtoul(const char * const nptr,
     return ((any >= 0) ? acc : ((unsigned long)(~0UL)));
 }
 
-static void flag_error(char *flag)
-{
-    static const char error_message[] = "Error: invalid flag usage: ";
-
-    fwrite(error_message, sizeof(error_message), 1, stderr);
-    fwrite(flag, sizeof(char), ice_strlen(flag), stderr);
-    fwrite("\n", sizeof(char), 1, stderr);
-    exit(84);
-}
-
 static bool handle_flag(const flag_t *flag, int *i, char **av)
 {
+    static const char error_message[] = "Error: invalid flag usage: ";
     const char *endptr;
 
     if (ice_strcmp(av[*i], flag->flag))
         return false;
     if (flag->boolean)
         *(flag->boolean) = true;
-    if (!av[*i + 1])
-        flag_error(flag->flag);
     *(flag->value) = my_strtoul(av[*i + 1], &endptr);
-    if (*endptr)
-        flag_error(flag->flag);
+    if (!endptr || *endptr) {
+        fwrite(error_message, sizeof(error_message), 1, stderr);
+        fwrite(flag->flag, sizeof(char), ice_strlen(flag->flag), stderr);
+        fwrite("\n", sizeof(char), 1, stderr);
+        exit(84);
+    }
     return ((*i)++);
 }
 
