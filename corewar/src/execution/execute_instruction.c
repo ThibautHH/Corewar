@@ -48,7 +48,8 @@ void execute_instructon(vm_t *vm, champion_t *champ, process_t *process)
     if (!process->cycles_left) {
         if (((*process->pc) - 1) >= OP_TAB_SIZE)
             kill_process(vm, champ, process);
-        process->cycles_left = op_tab[(*process->pc) - 1].nbr_cycles;
+        else
+            process->cycles_left = op_tab[(*process->pc) - 1].nbr_cycles;
         return;
     }
     if (!(--process->cycles_left))
