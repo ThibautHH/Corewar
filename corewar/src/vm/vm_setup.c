@@ -54,9 +54,10 @@ static void set_load_address(vm_t *vm)
     }
     gap_size = (MEM_SIZE - size_sum) / vm->nb_champ;
     TAILQ_FOREACH(champ, &vm->champ_list, entries)
-        champ->load_address = TAILQ_PREV(champ, champions_s, entries) ?
-            TAILQ_PREV(champ, champions_s, entries)->load_address +
-            TAILQ_PREV(champ, champions_s, entries)->size + gap_size : 0;
+        if (champ->load_address == -1)
+            champ->load_address = TAILQ_PREV(champ, champions_s, entries) ?
+                TAILQ_PREV(champ, champions_s, entries)->load_address +
+                TAILQ_PREV(champ, champions_s, entries)->size + gap_size : 0;
 }
 
 void vm_setup(vm_t *vm)
