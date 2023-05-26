@@ -19,7 +19,7 @@ SRC			:=	$(addprefix $(DIR),		\
 DIR			+=	$(addprefix $(DIR_SRC), ./parsing/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				parse_args.c			\
-				get_smallest_cham_nb.c	\
+				get_next_nb.c	\
 				)
 
 DIR			+=	$(addprefix $(DIR_SRC), ./execution/)
