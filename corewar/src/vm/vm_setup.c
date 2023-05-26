@@ -29,13 +29,13 @@ static void sort_champions(vm_t *vm)
     for (champion_t *first = FIRST_CHAMP, *last = LAST_CHAMP;
         swapped; first = TAILQ_NEXT(first, entries)) {
         swapped = 0;
-        for (champion_t *i = first; i != last; i = TAILQ_NEXT(i, entries))
+        for (champion_t *i = first; i && i != last; i = TAILQ_NEXT(i, entries))
             next_swap(vm, i, &swapped);
         if (!swapped)
             break;
         last = TAILQ_PREV(last, champions_s, entries);
         swapped = 0;
-        for (champion_t *i = last; i != first; i = TAILQ_PREV(i, champions_s,
+        for (champion_t *i = last; i && i != first; i = TAILQ_PREV(i, champions_s,
             entries))
             prev_swap(vm, i, &swapped);
     }
