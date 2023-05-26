@@ -78,7 +78,8 @@ void parse_args(int ac, char **av, vm_t *vm)
         if (is_flag && !(is_flag = false))
             continue;
         champion_init(vm, champion_number, av[i]);
-        LAST_CHAMP->load_address = address_specified ? champion_address : -1;
+        LAST_CHAMP->load_address = address_specified
+            ? (ssize_t)champion_address : -1;
         champion_number = get_next_nb(vm);
         address_specified = false;
     }
