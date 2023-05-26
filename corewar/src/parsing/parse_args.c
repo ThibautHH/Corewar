@@ -63,7 +63,7 @@ static bool handle_flag(const flag_t *flag, int *i, char **av)
 
 void parse_args(int ac, char **av, vm_t *vm)
 {
-    size_t champion_address = 0;
+    size_t champion_address;
     uint16_t champion_number = 1;
     bool address_specified = false, is_flag = false;
     const flag_t flags[FLAG_COUNT] = {
@@ -78,8 +78,7 @@ void parse_args(int ac, char **av, vm_t *vm)
         if (is_flag && !(is_flag = false))
             continue;
         champion_init(vm, champion_number, av[i]);
-        LAST_CHAMP->load_address = (champion_address +
-            ((address_specified) ? 0 : LAST_CHAMP->size)) % MEM_SIZE;
+        LAST_CHAMP->load_address = address_specified ? champion_address : -1;
         champion_number = get_next_nb(vm);
         address_specified = false;
     }

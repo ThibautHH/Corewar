@@ -23,28 +23,6 @@ static void is_champ_number_already_used(champion_t *champ)
         }
 }
 
-static void next_swap(vm_t *vm, champion_t *i, bool *swapped)
-{
-    champion_t *next = TAILQ_NEXT(i, entries);
-
-    if (i->number <= next->number)
-        return;
-    TAILQ_REMOVE(&vm->champ_list, i, entries);
-    TAILQ_INSERT_AFTER(&vm->champ_list, next, i, entries);
-    *swapped = 1;
-}
-
-static void prev_swap(vm_t *vm, champion_t *i, bool *swapped)
-{
-    champion_t *prev = TAILQ_PREV(i, champions_s, entries);
-
-    if (i->number >= prev->number)
-        return;
-    TAILQ_REMOVE(&vm->champ_list, i, entries);
-    TAILQ_INSERT_BEFORE(prev, i, entries);
-    *swapped = 1;
-}
-
 static void sort_champions(vm_t *vm)
 {
     bool swapped = 1;
@@ -63,6 +41,24 @@ static void sort_champions(vm_t *vm)
     }
 }
 
+static void set_load_address(vm_t *vm)
+{
+    champion_t *champ;
+    uint16_t size_sum = 0, gap_size;
+
+    TAILQ_FOREACH(champ, &vm->champ_list, entries)
+        size_sum += champ->size;
+    if (size_sum > MEM_SIZE) {
+        fwrite("Error: champions are too big\n", sizeof(char[30]), 1, stderr);
+        exit(84);
+    }
+    gap_size = (MEM_SIZE - size_sum) / vm->nb_champ;
+    TAILQ_FOREACH(champ, &vm->champ_list, entries)
+        champ->load_address = TAILQ_PREV(champ, champions_s, entries) ?
+            TAILQ_PREV(champ, champions_s, entries)->load_address +
+            TAILQ_PREV(champ, champions_s, entries)->size + gap_size : 0;
+}
+
 void vm_setup(vm_t *vm)
 {
     champion_t *champ;
@@ -70,6 +66,7 @@ void vm_setup(vm_t *vm)
     TAILQ_FOREACH(champ, &vm->champ_list, entries)
         is_champ_number_already_used(champ);
     sort_champions(vm);
+    set_load_address(vm);
     TAILQ_FOREACH(champ, &vm->champ_list, entries) {
         for (size_t i = 0; i < champ->size; i++)
             vm->memory[(champ->load_address + i) % MEM_SIZE] = champ->code[i];

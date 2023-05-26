@@ -50,7 +50,7 @@ typedef struct champion_s {
     char comment[COMMENT_LENGTH + 1];
     uint32_t size;
     uint8_t *code;
-    size_t load_address;
+    ssize_t load_address;
     uint16_t number;
     bool alive;
     TAILQ_HEAD(, process_s) process_list;
@@ -75,5 +75,27 @@ typedef struct flag_s {
     bool *boolean;
     size_t *value;
 } flag_t;
+
+static inline void next_swap(vm_t *vm, champion_t *i, bool *swapped)
+{
+    champion_t *next = TAILQ_NEXT(i, entries);
+
+    if (i->number <= next->number)
+        return;
+    TAILQ_REMOVE(&vm->champ_list, i, entries);
+    TAILQ_INSERT_AFTER(&vm->champ_list, next, i, entries);
+    *swapped = 1;
+}
+
+static inline void prev_swap(vm_t *vm, champion_t *i, bool *swapped)
+{
+    champion_t *prev = TAILQ_PREV(i, champions_s, entries);
+
+    if (i->number >= prev->number)
+        return;
+    TAILQ_REMOVE(&vm->champ_list, i, entries);
+    TAILQ_INSERT_BEFORE(prev, i, entries);
+    *swapped = 1;
+}
 
 #endif /* !COREWAR_COREWAR_H */
