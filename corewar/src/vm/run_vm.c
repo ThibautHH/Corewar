@@ -13,6 +13,21 @@
 void execute_instructon(vm_t *vm, champion_t *champ, process_t *process);
 void kill_process(vm_t *vm, champion_t *champ, process_t *process);
 
+static const char win_fmt[] = "The player %u(%s)has won.\n";
+
+static void dump_memory(vm_t *vm)
+{
+    static char line[(32 * 3) + 1] = {0};
+    register char *head = line;
+
+    for (uint8_t *p = vm->memory; p < vm->memory + MEM_SIZE;) {
+        while (head < line + (32 * 3))
+            head += ice_sprintf(head, " %02X", *(p++));
+        head = line;
+        ice_printf("%-4X :%s\n", (uint32_t)(p - vm->memory) - 32, line);
+    }
+}
+
 static void trim_champ_list(vm_t *vm)
 {
     champion_t *champ, *ctmp;
@@ -31,7 +46,7 @@ void run_vm(vm_t *vm)
     champion_t *champ, *ctmp;
     process_t *process, *ptmp;
 
-    while (vm->nb_champ > 1) {
+    while (vm->nb_champ > 1 || !vm->dump || vm->cycle != vm->dump_cycle) {
         TAILQ_FOREACH_SAFE(champ, &vm->champ_list, entries, ctmp)
             TAILQ_FOREACH_SAFE(process, &champ->process_list, entries, ptmp)
                 execute_instructon(vm, champ, process);
@@ -44,6 +59,8 @@ void run_vm(vm_t *vm)
             vm->live_call_count = 0;
         }
     }
-    champ = TAILQ_FIRST(&vm->champ_list);
-    ice_printf("The player %u(%s)has won.\n", (uint32_t)champ->number, champ->name);
+    if (vm->dump && vm->cycle == vm->dump_cycle)
+        dump_memory(vm);
+    if (vm->nb_champ == 1)
+        ice_printf(win_fmt, (uint32_t)FIRST_CHAMP->number, FIRST_CHAMP->name);
 }
