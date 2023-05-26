@@ -35,8 +35,8 @@ static void sort_champions(vm_t *vm)
             break;
         last = TAILQ_PREV(last, champions_s, entries);
         swapped = 0;
-        for (champion_t *i = last; i && i != first; i = TAILQ_PREV(i, champions_s,
-            entries))
+        for (champion_t *i = last; i && i != first; i = TAILQ_PREV(i,
+            champions_s, entries))
             prev_swap(vm, i, &swapped);
     }
 }

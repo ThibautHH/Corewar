@@ -11,43 +11,38 @@
 #include "ice/printf.h"
 
 void live(vm_t *vm, champion_t *champ, process_t *process);
+void ld_op(vm_t *vm, champion_t *champ, process_t *process);
+void st_op(vm_t *vm, champion_t *champ, process_t *process);
+void add(vm_t *vm, champion_t *champ, process_t *process);
+void sub(vm_t *vm, champion_t *champ, process_t *process);
+void and_op(vm_t *vm, champion_t *champ, process_t *process);
+void or_op(vm_t *vm, champion_t *champ, process_t *process);
+void xor_op(vm_t *vm, champion_t *champ, process_t *process);
+void zjmp(vm_t *vm, champion_t *champ, process_t *process);
+void ldi(vm_t *vm, champion_t *champ, process_t *process);
+void sti(vm_t *vm, champion_t *champ, process_t *process);
+void fork_op(vm_t *vm, champion_t *champ, process_t *process);
+void lld(vm_t *vm, champion_t *champ, process_t *process);
+void lldi(vm_t *vm, champion_t *champ, process_t *process);
+void lfork(vm_t *vm, champion_t *champ, process_t *process);
 void aff(vm_t *vm, champion_t *champ, process_t *process);
-
-void zbui(UNUSED vm_t *vm, UNUSED champion_t *champ, UNUSED process_t *process)
-{
-    return;
-}
 
 static const instruction_t instructions[OP_TAB_SIZE] = {
     &live,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    &zbui,
-    /*,
-    &ld,
-    &st,
+    &ld_op,
+    &st_op,
     &add,
     &sub,
-    &and,
-    &or,
-    &xor,
+    &and_op,
+    &or_op,
+    &xor_op,
     &zjmp,
     &ldi,
     &sti,
-    &fork,
+    &fork_op,
     &lld,
     &lldi,
-    &lfork,*/
+    &lfork,
     &aff
 };
 
