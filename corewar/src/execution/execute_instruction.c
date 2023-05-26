@@ -11,8 +11,28 @@
 
 void live(vm_t *vm, champion_t *champ, process_t *process);
 
+void zbui(UNUSED vm_t *vm, UNUSED champion_t *champ, UNUSED process_t *process)
+{
+    return;
+}
+
 static const instruction_t instructions[OP_TAB_SIZE] = {
-    &live/*,
+    &live,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui,
+    &zbui
+    /*,
     &ld,
     &st,
     &add,
