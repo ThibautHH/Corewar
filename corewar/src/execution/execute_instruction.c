@@ -11,6 +11,7 @@
 #include "ice/printf.h"
 
 void live(vm_t *vm, champion_t *champ, process_t *process);
+void aff(vm_t *vm, champion_t *champ, process_t *process);
 
 void zbui(UNUSED vm_t *vm, UNUSED champion_t *champ, UNUSED process_t *process)
 {
@@ -32,7 +33,6 @@ static const instruction_t instructions[OP_TAB_SIZE] = {
     &zbui,
     &zbui,
     &zbui,
-    &zbui
     /*,
     &ld,
     &st,
@@ -47,8 +47,8 @@ static const instruction_t instructions[OP_TAB_SIZE] = {
     &fork,
     &lld,
     &lldi,
-    &lfork,
-    &aff*/
+    &lfork,*/
+    &aff
 };
 
 void kill_process(vm_t *vm, champion_t *champ, process_t *process)

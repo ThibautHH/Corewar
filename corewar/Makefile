@@ -30,6 +30,7 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 DIR			+=	$(addprefix $(DIR_SRC), ./instructions/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
 				live.c					\
+				aff.c					\
 				)
 
 DIR			+=	$(addprefix $(DIR_SRC), ./init/)
