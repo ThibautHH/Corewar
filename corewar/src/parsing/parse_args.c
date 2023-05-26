@@ -79,7 +79,7 @@ void parse_args(int ac, char **av, vm_t *vm)
     };
 
     for (int i = 1; i < ac; i++) {
-        for (uint8_t j = 0; is_flag && j < FLAG_COUNT; j++)
+        for (uint8_t j = 0; !is_flag && j < FLAG_COUNT; j++)
             is_flag = handle_flag(&(flags[j]), &i, av);
         if (is_flag)
             continue;
