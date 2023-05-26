@@ -22,6 +22,8 @@ static void trim_champ_list(vm_t *vm)
         if (!champ->alive)
             TAILQ_FOREACH_SAFE(process, &champ->process_list, entries, ptmp)
                 kill_process(vm, champ, process);
+    TAILQ_FOREACH(champ, &vm->champ_list, entries)
+        champ->alive = false;
 }
 
 void run_vm(vm_t *vm)
