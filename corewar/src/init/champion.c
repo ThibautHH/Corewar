@@ -21,11 +21,12 @@ static void parse_file(char *filename, champion_t *champion)
     if (END(magic) != COREWAR_EXEC_MAGIC) {
         fwrite("Error: file isn't a corewar binary\n", 1, 36, stderr);
         exit(84);
-    }
-    fread(champion->name, sizeof(char[PROG_NAME_LENGTH + 1]), 1, file);
+    } fread(champion->name, sizeof(char[PROG_NAME_LENGTH + 1]), 1, file);
+    fseek(file, 3, SEEK_CUR);
     fread(&champion->size, sizeof(uint32_t), 1, file);
     champion->size = END(champion->size);
     fread(champion->comment, sizeof(char[COMMENT_LENGTH + 1]), 1, file);
+    fseek(file, 3, SEEK_CUR);
     champion->code = malloc(champion->size);
     if (!champion->code)
         exit(84);
