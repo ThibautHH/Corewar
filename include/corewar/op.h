@@ -222,9 +222,9 @@ static const op_t op_tab[OP_TAB_SIZE] = {
     #define COREWAR_EXEC_MAGIC 0xea83f3u
 
 typedef struct header_s {
-    uint32_t magic;
+    int magic;
     char prog_name[PROG_NAME_LENGTH + 1];
-    uint32_t prog_size;
+    int prog_size;
     char comment[COMMENT_LENGTH + 1];
 } header_t;
 
