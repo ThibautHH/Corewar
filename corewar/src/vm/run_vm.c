@@ -46,7 +46,7 @@ void run_vm(vm_t *vm)
     champion_t *champ, *ctmp;
     process_t *process, *ptmp;
 
-    while (vm->nb_champ > 1 || !vm->dump || vm->cycle != vm->dump_cycle) {
+    while (vm->nb_champ > 1 && (!vm->dump || vm->cycle != vm->dump_cycle)) {
         TAILQ_FOREACH_SAFE(champ, &vm->champ_list, entries, ctmp)
             TAILQ_FOREACH_SAFE(process, &champ->process_list, entries, ptmp)
                 execute_instructon(vm, champ, process);
