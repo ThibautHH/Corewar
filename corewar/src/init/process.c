@@ -16,6 +16,7 @@ void process_init(vm_t *vm, champion_t *champ)
         exit(84);
     process->carry = 0;
     process->pc = vm->memory + champ->load_address;
+    process->cycles_left = 0;
     ice_memset(process->regs, 0, REG_SIZE * REG_NUMBER);
     PROC_REG(process, 1) = champ->number;
     TAILQ_INSERT_TAIL(&champ->process_list, process, entries);
