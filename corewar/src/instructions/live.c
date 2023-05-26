@@ -7,8 +7,6 @@
 
 #include "corewar/corewar.h"
 
-void kill_process(vm_t *vm, champion_t *champ, process_t *process);
-
 void live(vm_t *vm, champion_t *champ, process_t *process)
 {
     uint32_t number = 0;
