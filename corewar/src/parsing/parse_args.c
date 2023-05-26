@@ -51,7 +51,10 @@ static bool handle_flag(const flag_t *flag, int *i, char **av)
         return false;
     if (flag->boolean)
         *(flag->boolean) = true;
-    *(flag->value) = my_strtoul(av[*i + 1], &endptr);
+    if (av[*i][1] == 'n')
+        *((uint16_t *)flag->value) = (uint16_t)my_strtoul(av[*i + 1], &endptr);
+    else
+        *(flag->value) = my_strtoul(av[*i + 1], &endptr);
     if (!endptr || *endptr) {
         fwrite(error_message, sizeof(error_message), 1, stderr);
         fwrite(flag->flag, sizeof(char), ice_strlen(flag->flag), stderr);
