@@ -81,7 +81,7 @@ void parse_args(int ac, char **av, vm_t *vm)
     for (int i = 1; i < ac; i++) {
         for (uint8_t j = 0; !is_flag && j < FLAG_COUNT; j++)
             is_flag = handle_flag(&(flags[j]), &i, av);
-        if (is_flag)
+        if (is_flag && !(is_flag = false))
             continue;
         champion_init(vm, champion_number, av[i]);
         LAST_CHAMP->load_address = (champion_address +
