@@ -98,7 +98,8 @@ static inline void prev_swap(vm_t *vm, champion_t *i, bool *swapped)
     *swapped = 1;
 }
 
-UNUSED static const char *malloc_failed_error = "Vm failed to malloc, exiting.\n";
+UNUSED static const char *malloc_failed_error =
+"Vm failed to malloc, exiting.\n";
 
 uint32_t get_direct_value(process_t *process);
 uint32_t get_indirect_value(vm_t *vm, process_t *process);
