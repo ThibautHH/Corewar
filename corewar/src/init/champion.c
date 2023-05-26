@@ -42,6 +42,7 @@ void champion_init(vm_t *vm, uint16_t nb, char *file)
         exit(84);
     parse_file(file, champion);
     champion->number = nb;
+    champion->alive = false;
     TAILQ_INIT(&champion->process_list);
     TAILQ_INSERT_TAIL(&vm->champ_list, champion, entries);
     vm->nb_champ++;
