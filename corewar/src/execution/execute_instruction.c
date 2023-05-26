@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include "corewar/corewar.h"
 #include "ice/memory.h"
+#include "ice/printf.h"
 
 void live(vm_t *vm, champion_t *champ, process_t *process);
 
@@ -56,6 +57,7 @@ void kill_process(vm_t *vm, champion_t *champ, process_t *process)
     vm->nb_process--;
     free(process);
     if (TAILQ_EMPTY(&champ->process_list)) {
+        ice_printf("The player %d(%s)has died.\n", champ->number, champ->name);
         TAILQ_REMOVE(&vm->champ_list, champ, entries);
         vm->nb_champ--;
         free(champ->code);

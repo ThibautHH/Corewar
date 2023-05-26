@@ -9,6 +9,7 @@
 #include "corewar/corewar.h"
 #include "ice/memory.h"
 #include "ice/printf.h"
+#include "ice/output.h"
 
 void execute_instructon(vm_t *vm, champion_t *champ, process_t *process);
 void kill_process(vm_t *vm, champion_t *champ, process_t *process);
@@ -41,6 +42,16 @@ static void trim_champ_list(vm_t *vm)
         champ->alive = false;
 }
 
+static void end_of_game(vm_t *vm)
+{
+    if (vm->dump && vm->cycle == vm->dump_cycle)
+        dump_memory(vm);
+    if (vm->nb_champ == 1)
+        ice_printf(win_fmt, (uint32_t)FIRST_CHAMP->number, FIRST_CHAMP->name);
+    else if (vm->nb_champ == 0)
+        ice_puts("The last players died at the same time, it's a tie.\n");
+}
+
 void run_vm(vm_t *vm)
 {
     champion_t *champ, *ctmp;
@@ -59,8 +70,5 @@ void run_vm(vm_t *vm)
             vm->live_call_count = 0;
         }
     }
-    if (vm->dump && vm->cycle == vm->dump_cycle)
-        dump_memory(vm);
-    if (vm->nb_champ == 1)
-        ice_printf(win_fmt, (uint32_t)FIRST_CHAMP->number, FIRST_CHAMP->name);
+    end_of_game(vm);
 }
