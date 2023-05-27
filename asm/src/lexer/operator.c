@@ -27,6 +27,8 @@ static bool clean_line(token_t *token)
     if (!is_skipped_char(token->str[token->len]))
         return false;
     for (; token->str[i]; i++) {
+        if (token->str[i] == COMMENT_CHAR)
+            break;
         if (is_skipped_char(token->str[i]))
             continue;
         token->str[j++] = token->str[i];
