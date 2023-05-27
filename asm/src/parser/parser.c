@@ -27,20 +27,21 @@ static bool get_label(parser_t *parser, lexer_t *lexer)
     new_label->str = old_label->str;
     new_label->len = parser->size_bits;
     free(old_label);
-    return list_add(parser->labels, new_label);
+    return list_add(parser->labels, new_label) && get_label(parser, lexer);
 }
 
-static void set_label(parser_t *code, search_label_t *search_label)
+static bool set_label(parser_t *parser, search_label_t *search_label)
 {
     label_t *label;
 
-    for (list_node_t *node = code->labels->head; node; node = node->next) {
+    for (list_node_t *node = parser->labels->head; node; node = node->next) {
         label = node->value;
         if (!ice_strcmp(label->str, search_label->name)) {
             *search_label->ptr = label->len - search_label->index;
-            break;
+            return true;
         }
     }
+    return false;
 }
 
 static parser_op_t *precoder(parser_t *parser, lexer_t *lexer, lexer_op_t *op)
@@ -63,6 +64,17 @@ static parser_op_t *precoder(parser_t *parser, lexer_t *lexer, lexer_op_t *op)
     return precode;
 }
 
+static bool add_last_label(parser_t *parser, lexer_t *lexer)
+{
+    for (list_node_t *node = lexer->label->head; node;
+        node = lexer->label->head) {
+        if (!get_label(parser, lexer))
+            return false;
+        parser->size++;
+    }
+    return true;
+}
+
 parser_t *run_parser(lexer_t *lexer)
 {
     parser_t *parser = ice_calloc(1, sizeof(parser_t));
@@ -76,8 +88,12 @@ parser_t *run_parser(lexer_t *lexer)
     for (list_node_t *node = lexer->op->head; node; node = node->next)
         if (!list_add(parser->ops, precoder(parser, lexer, node->value)))
             return NULL;
+    if (!add_last_label(parser, lexer))
+        return NULL;
     for (list_node_t *node = parser->search_labels->head; node;
-        node = node->next)
-        set_label(parser, node->value);
+        node = node->next) {
+        if (!set_label(parser, node->value))
+            return NULL;
+    }
     return parser;
 }
