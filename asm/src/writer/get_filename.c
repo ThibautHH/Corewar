@@ -11,7 +11,7 @@
 
 char *get_filename(char *filepath)
 {
-    uint64_t len = ice_strlen(filepath);
+    uint32_t len = ice_strlen(filepath);
 
     if (len < 3 || ice_strcmp(filepath + len - 2, ".s"))
         return NULL;

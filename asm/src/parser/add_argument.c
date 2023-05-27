@@ -11,7 +11,7 @@
 static bool add_reg(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
 {
     char *endptr;
-    int64_t value = ice_strtol(arg + 1, &endptr);
+    int value = (int)ice_strtol(arg + 1, &endptr);
 
     if (*endptr || value <= 0 || value > REG_NUMBER)
         return false;
@@ -24,13 +24,13 @@ static bool add_reg(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
 static bool add_dir(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
 {
     char *endptr;
-    int64_t value;
+    int value;
 
     op->type |= DIR_CODE << GET_OFFSET(index);
     parser->tmp_size_bits += is_index(op, DIR_CODE) ? IND_SIZE : DIR_SIZE;
     if (arg[1] == LABEL_CHAR)
         return add_search_label(parser, op, arg + 1, index);
-    value = ice_strtol(arg + 1, &endptr);
+    value = (int)ice_strtol(arg + 1, &endptr);
     if (*endptr)
         return false;
     op->args[index] = value;
@@ -40,7 +40,7 @@ static bool add_dir(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
 static bool add_ind(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
 {
     char *endptr;
-    int64_t value = ice_strtol(arg, &endptr);
+    int value = (int)ice_strtol(arg, &endptr);
 
     if (*endptr)
         return false;
