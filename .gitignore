@@ -16,6 +16,9 @@ build/
 *.out
 *.a
 *.cor
+*.cor.ref
+*.hex
+*.hex.ref
 asm/asm
 corewar/corewar
 
