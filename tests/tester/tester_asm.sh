@@ -107,3 +107,9 @@ do
 done
 
 printf "[\033[0;33mTOTAL\033[0m] $TOTAL_OK/$TOTAL_TEST\n"
+if [ $TOTAL_OK -eq $TOTAL_TEST ]
+then
+    exit 0
+else
+    exit 1
+fi
