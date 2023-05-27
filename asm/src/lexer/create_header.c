@@ -29,12 +29,22 @@ static bool extract_variable(char *dest, char **token, uint32_t max_len)
     return !token_skip_chars(*token + string_len + 1)[0];
 }
 
+static bool as_comment(char **lines)
+{
+    for (uint32_t i = 0; lines[i]; i++)
+        if (ice_strstr(lines[i], COMMENT_CMD_STRING))
+            return true;
+    return false;
+}
+
 static bool get_variable(char *dest, char ***lines, char *search,
     uint32_t max_len)
 {
     uint32_t token_len = ice_strlen(search);
     char *token;
 
+    if (max_len == COMMENT_LENGTH && !as_comment(*lines))
+        return true;
     for (; *lines[0]; (*lines)++) {
         token = token_skip_chars(*lines[0]);
         if (!token[0])
