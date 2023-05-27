@@ -10,20 +10,19 @@
 
 static bool as_separator(lexer_op_t *op, token_t *token)
 {
-    char *last_arg = op->args[op->arg_count - 1];
-
-    if (op->arg_count == 0)
-        return true;
-    if (last_arg[ice_strlen(last_arg) - 1] == SEPARATOR_CHAR) {
-        last_arg[ice_strlen(last_arg) - 1] = '\0';
-        return true;
+    if (op->arg_count != 0) {
+        if (token->str[0] != SEPARATOR_CHAR)
+            return false;
+        token->str++;
+        token->len--;
     }
-    if (token->str[0] == SEPARATOR_CHAR) {
-        (token->str)++;
-        (token->len)--;
-        return true;
+    for (uint32_t i = 0; token->str[i]; i++) {
+        if (token->str[i] == SEPARATOR_CHAR) {
+            token->len = i;
+            return true;
+        }
     }
-    return false;
+    return true;
 }
 
 static bool handle_token(lexer_t *lexer, token_t *token)
@@ -66,6 +65,10 @@ bool extract(lexer_t *lexer, char **lines)
     token_t *token = &tmp;
 
     if (!lexer)
+        return false;
+    if (token->str)
+        token->str = *(lines++);
+    else
         return false;
     for (; token->str; token->str = *(lines++))
         if (!read_line(lexer, token))
