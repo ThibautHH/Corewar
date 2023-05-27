@@ -44,6 +44,8 @@ do
 done
 
 function handle_error() {
+        ((TOTAL_TEST++))
+
         ../../asm/asm $1
         if [ $? -eq 84 ]
         then
@@ -58,7 +60,6 @@ function handle_error() {
 
 for file in ./errors/*
 do
-    ((TOTAL_TEST++))
     handle_error $file
 done
 
