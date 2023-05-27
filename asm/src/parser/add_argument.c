@@ -42,12 +42,12 @@ static bool add_ind(parser_t *parser, parser_op_t *op, uint8_t index, char *arg)
     char *endptr;
     int value = (int)ice_strtol(arg, &endptr);
 
-    if (*endptr)
-        return false;
     op->type |= IND_CODE << GET_OFFSET(index);
     parser->tmp_size_bits += IND_SIZE;
     if (arg[0] == LABEL_CHAR)
         return add_search_label(parser, op, arg, index);
+    if (*endptr)
+        return false;
     op->args[index] = value;
     return true;
 }
