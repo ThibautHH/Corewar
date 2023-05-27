@@ -70,8 +70,10 @@ bool extract(lexer_t *lexer, char **lines)
         token->str = *(lines++);
     else
         return false;
-    for (; token->str; token->str = *(lines++))
+    for (; token->str; token->str = *(lines++)) {
         if (!read_line(lexer, token))
             return false;
+        token->len = 0;
+    }
     return true;
 }
