@@ -9,11 +9,12 @@
 
 void zjmp(vm_t *vm)
 {
-    int32_t offset = get_value(vm, DIR_CODE, true, false);
+    int16_t offset = get_value(vm, DIR_CODE, true, false).index;
 
     if (!PROC->carry)
         return;
-    PROC->pc += offset % IDX_MOD;
+    PROC->pc = INST;
+    PROC->pc += offset;
     if (PROC->pc >= vm->memory + MEM_SIZE)
         do
             PROC->pc -= MEM_SIZE;

@@ -18,12 +18,15 @@ static int32_t get_register_value(vm_t *vm)
     return PROC_REG(PROC, reg_num);
 }
 
-static int32_t get_direct_value(vm_t *vm, const bool is_index)
+static val_t get_direct_value(vm_t *vm, const bool is_index)
 {
-    register int32_t val = 0;
+    register val_t val = {0};
 
-    for (register uint8_t i = 0; i < (is_index ? 2 : 4); i++)
-        val |= NEXT_BYTE << (i * 8);
+    for (uint8_t i = 0, n = (is_index ? 2 : 4); i < n; i++)
+        if (is_index)
+            val.index |= NEXT_BYTE << BYTE_SHIFT;
+        else
+            val.direct |= NEXT_BYTE << BYTE_SHIFT;
     return val;
 }
 
@@ -33,8 +36,8 @@ static int32_t get_indirect_value(vm_t *vm, bool long_mode)
     int16_t offset = 0;
     int32_t value = 0;
 
-    for (uint8_t i = 0; i < 2; i++)
-        offset |= NEXT_BYTE << (i * 8);
+    for (uint8_t i = 0, n = 2; i < n; i++)
+        offset |= NEXT_BYTE << BYTE_SHIFT;
     if (!long_mode)
         offset %= IDX_MOD;
     address += offset;
@@ -43,22 +46,22 @@ static int32_t get_indirect_value(vm_t *vm, bool long_mode)
     else
         while (address < 0)
             address += MEM_SIZE;
-    for (uint8_t i = 0; i < 4; i++)
+    for (uint8_t i = 0, n = 4; i < n; i++)
         value |= vm->memory[address + i] << (i * 8);
     return value;
 }
 
-int32_t get_value(vm_t *vm, uint8_t type, bool is_index, bool long_mode)
+val_t get_value(vm_t *vm, uint8_t type, bool is_index, bool long_mode)
 {
     switch (type) {
     case REG_CODE:
-        return get_register_value(vm);
+        return (val_t){.direct = get_register_value(vm)};
     case DIR_CODE:
         return get_direct_value(vm, is_index);
     case IND_CODE:
-        return get_indirect_value(vm, long_mode);
+        return (val_t){.direct = get_indirect_value(vm, long_mode)};
     default:
         kill_process(vm);
-        return 0;
+        return (val_t){0};
     }
 }

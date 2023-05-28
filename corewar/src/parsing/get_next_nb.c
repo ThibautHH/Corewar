@@ -7,9 +7,9 @@
 
 #include "corewar/corewar.h"
 
-uint16_t get_next_nb(vm_t *vm)
+int32_t get_next_nb(vm_t *vm)
 {
-    uint16_t smallest_nb = 1;
+    int32_t smallest_nb = 1;
     champion_t *champion = NULL;
 
     TAILQ_FOREACH(champion, &vm->champ_list, entries)

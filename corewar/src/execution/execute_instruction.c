@@ -62,15 +62,16 @@ void kill_process(vm_t *vm)
 
 void execute_instructon(vm_t *vm)
 {
+    uint8_t code = (*PROC->pc) - 1;
+
+    if (code >= OP_TAB_SIZE)
+        return kill_process(vm);
     if (!PROC->cycles_left) {
-        if (((*PROC->pc) - 1) >= OP_TAB_SIZE)
-            kill_process(vm);
-        else
-            PROC->cycles_left = op_tab[(*PROC->pc) - 1].nbr_cycles;
+        PROC->cycles_left = op_tab[code].nbr_cycles;
         return;
     }
     if (!(--PROC->cycles_left)) {
-        INST = PROC->pc;
-        instructions[NEXT_BYTE - 1](vm);
+        INST = PROC->pc++;
+        instructions[code](vm);
     }
 }

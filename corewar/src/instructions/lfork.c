@@ -10,7 +10,7 @@
 
 void lfork(vm_t *vm)
 {
-    int32_t offset = get_value(vm, DIR_CODE, true, false);
+    int16_t offset = get_value(vm, DIR_CODE, true, false).index;
     process_t *new_proc = malloc(sizeof(process_t));
 
     if (!new_proc)

@@ -31,6 +31,12 @@
     #define END16(x) ((x) << 8 | (x) >> 8)
     #define END(x) (_Generic ((x), uint32_t : END32(x), uint16_t : END16(x)))
 
+extern const uint16_t endianness;
+
+    #define IS_LE (*((uint8_t *)(&endianness)))
+
+    #define BYTE_SHIFT ((IS_LE ? (n - i - 1) : i) * 8)
+
     #define PROC_REG(p, n) (*((uint32_t *)(&((p)->regs[(n) - 1]))))
 
     #define FIRST_CHAMP (TAILQ_FIRST(&vm->champ_list))
@@ -41,6 +47,8 @@
     #define INST (vm->inst_pc)
 
     #define NEXT_BYTE (get_next_byte(vm))
+    #define ARGT(n) ((args_code >> (8 - (n) * 2)) & 0b11u)
+    #define VAL_TYPE(t, v) ((t) == DIR_CODE ? v.index : v.direct)
 
 typedef struct process_s {
     TAILQ_ENTRY(process_s) entries;
@@ -59,7 +67,7 @@ typedef struct champion_s {
     uint32_t size;
     uint8_t *code;
     ssize_t load_address;
-    uint16_t number;
+    int32_t number;
     bool alive;
     TAILQ_HEAD(, process_s) process_list;
 } champion_t;
@@ -80,6 +88,11 @@ typedef struct vm_s {
 } vm_t;
 
 typedef void (*instruction_t)(vm_t *);
+
+typedef union val_u {
+    int16_t index;
+    int32_t direct;
+} val_t;
 
 typedef struct flag_s {
     char *flag;
@@ -123,6 +136,6 @@ UNUSED static const char *malloc_failed_error =
 
 void kill_process(vm_t *vm);
 void set_value(vm_t *vm, uint8_t type, int32_t value, bool set_carry);
-int32_t get_value(vm_t *vm, uint8_t arg_type, bool is_index, bool long_mode);
+val_t get_value(vm_t *vm, uint8_t arg_type, bool is_index, bool long_mode);
 
 #endif /* !COREWAR_COREWAR_H */

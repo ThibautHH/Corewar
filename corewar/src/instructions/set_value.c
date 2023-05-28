@@ -7,6 +7,8 @@
 
 #include "corewar/corewar.h"
 
+const uint16_t endianness = 1;
+
 static void set_register_value(vm_t *vm, int32_t value, bool set_carry)
 {
     uint8_t reg_num = NEXT_BYTE;
@@ -23,8 +25,8 @@ static void set_indirect_value(vm_t *vm, int32_t value)
     ssize_t address = INST - vm->memory;
     int16_t offset = 0;
 
-    for (uint8_t i = 0; i < 2; i++)
-        offset |= NEXT_BYTE << (i * 8);
+    for (uint8_t i = 0, n = 2; i < n; i++)
+        offset |= NEXT_BYTE << BYTE_SHIFT;
     offset %= IDX_MOD;
     address += offset;
     if (address >= MEM_SIZE)
@@ -32,7 +34,7 @@ static void set_indirect_value(vm_t *vm, int32_t value)
     else
         while (address < 0)
             address += MEM_SIZE;
-    for (uint8_t i = 0; i < 4; i++)
+    for (uint8_t i = 0, n = 4; i < n; i++)
         vm->memory[address + i] = (value >> (i * 8)) & 0xFF;
 }
 
