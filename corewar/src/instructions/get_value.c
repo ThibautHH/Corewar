@@ -55,13 +55,13 @@ val_t get_value(vm_t *vm, uint8_t type, bool is_index, bool long_mode)
 {
     switch (type) {
     case REG_CODE:
-        return (val_t){.direct = get_register_value(vm)};
+        return ((val_t){.direct = get_register_value(vm)});
     case DIR_CODE:
         return get_direct_value(vm, is_index);
     case IND_CODE:
-        return (val_t){.direct = get_indirect_value(vm, long_mode)};
+        return ((val_t){.direct = get_indirect_value(vm, long_mode)});
     default:
         kill_process(vm);
-        return (val_t){0};
+        return ((val_t){0});
     }
 }
