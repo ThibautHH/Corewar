@@ -17,6 +17,8 @@ void live(vm_t *vm, champion_t *champ, process_t *process)
         if (champ->number == number) {
             champ->alive = true;
             vm->live_call_count++;
+            ice_printf("The player %d(%s) is alive.\n", champ->number,
+                champ->name);
             break;
         }
 }
