@@ -81,7 +81,8 @@ void execute_instruction(vm_t *vm, champion_t *champ, process_t *process)
 {
     if (process->pc == NULL) return;
     uint8_t opcode = *process->pc;
-    if (opcode < 1 || opcode > OP_TAB_SIZE) return;
+    if (opcode < 1 || opcode > OP_TAB_SIZE)
+        return kill_process(vm, champ, process);
     op_t op = op_tab[opcode - 1];
     size_t length = op.nbr_args;
     for (uint8_t i = 0; i < op.nbr_args; i++)
