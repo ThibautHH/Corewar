@@ -13,6 +13,7 @@
 void parse_args(int ac, char **av, vm_t *vm);
 #if defined(DEBUG)
 void print_debug(vm_t *vm);
+void store_vm_memory(vm_t *vm, char *filename);
 #endif
 void vm_init(vm_t *vm);
 void vm_setup(vm_t *vm);
@@ -46,7 +47,11 @@ int main(int ac, char **av)
     vm_setup(&vm);
 #if defined(DEBUG)
     print_debug(&vm);
+    store_vm_memory(&vm, "vm_memory_start.tmp");
 #endif
     run_vm(&vm);
+#if defined(DEBUG)
+    store_vm_memory(&vm, "vm_memory_end.tmp");
+#endif
     return (0);
 }

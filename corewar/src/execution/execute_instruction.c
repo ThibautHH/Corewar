@@ -10,6 +10,10 @@
 #include "ice/memory.h"
 #include "ice/printf.h"
 
+#if defined(DEBUG)
+void instructions_debug(champion_t *champ, op_t op);
+#endif
+
 void live(vm_t *vm, champion_t *champ, process_t *process);
 void ld_op(vm_t *vm, champion_t *champ, process_t *process);
 void st_op(vm_t *vm, champion_t *champ, process_t *process);
@@ -82,10 +86,11 @@ void execute_instruction(vm_t *vm, champion_t *champ, process_t *process)
     size_t length = op.nbr_args;
     for (uint8_t i = 0; i < op.nbr_args; i++)
         length += get_arg_length(*(process->pc + 1), i);
-    if (length == 0) {
-        process->pc++;
-        return;
-    }
+    (length == 0) ? process->pc++ : 0;
+    if (length == 0) return;
+#if defined(DEBUG)
+    instructions_debug(champ, op);
+#endif
     if (process->cycles_left == 0) {
         process->cycles_left = op.nbr_cycles;
         if (op.code >= 1 && op.code <= 16)
