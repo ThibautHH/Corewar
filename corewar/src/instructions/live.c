@@ -6,19 +6,20 @@
 */
 
 #include "corewar/corewar.h"
+#include "ice/printf.h"
+#include <stdio.h>
 
-void live(vm_t *vm, champion_t *champ, process_t *process)
+void live(vm_t *vm, UNUSED champion_t *champ, process_t *process)
 {
-    uint32_t number = 0;
+    uint32_t player_number = get_direct_value(process);
+    champion_t *live_champ;
 
-    for (uint8_t i = 0; i < 4; i++)
-        number |= *(process->pc++) << (i * 8);
-    TAILQ_FOREACH(champ, &vm->champ_list, entries)
-        if (champ->number == number) {
-            champ->alive = true;
-            vm->live_call_count++;
-            ice_printf("The player %d(%s) is alive.\n", champ->number,
-                champ->name);
+    TAILQ_FOREACH(live_champ, &vm->champ_list, entries) {
+        if (live_champ->number == player_number) {
+            live_champ->alive = true;
+            printf("The player %d(%s) is alive.\n", live_champ->number,
+                live_champ->name);
             break;
         }
+    }
 }

@@ -60,15 +60,37 @@ void kill_process(vm_t *vm, champion_t *champ, process_t *process)
     }
 }
 
-void execute_instructon(vm_t *vm, champion_t *champ, process_t *process)
+size_t get_arg_length(uint8_t args_code, uint8_t arg_index)
 {
-    if (!process->cycles_left) {
-        if (((*process->pc) - 1) >= OP_TAB_SIZE)
-            kill_process(vm, champ, process);
-        else
-            process->cycles_left = op_tab[(*process->pc) - 1].nbr_cycles;
+    uint8_t arg_type = (args_code >> ((3 - arg_index) * 2)) & 0x3;
+
+    if (arg_type == REG_CODE)
+        return REG_SIZE;
+    if (arg_type == DIR_CODE)
+        return DIR_SIZE;
+    if (arg_type == IND_CODE)
+        return IND_SIZE;
+    return 0;
+}
+
+void execute_instruction(vm_t *vm, champion_t *champ, process_t *process)
+{
+    if (process->pc == NULL) return;
+    uint8_t opcode = *process->pc;
+    if (opcode < 1 || opcode > OP_TAB_SIZE) return;
+    op_t op = op_tab[opcode - 1];
+    size_t length = op.nbr_args;
+    for (uint8_t i = 0; i < op.nbr_args; i++)
+        length += get_arg_length(*(process->pc + 1), i);
+    if (length == 0) {
+        process->pc++;
         return;
     }
-    if (!(--process->cycles_left))
-        instructions[(*process->pc++) - 1](vm, champ, process);
+    if (process->cycles_left == 0) {
+        process->cycles_left = op.nbr_cycles;
+        if (op.code >= 1 && op.code <= 16)
+            instructions[op.code - 1](vm, champ, process);
+        process->pc += length;
+    } else
+        process->cycles_left--;
 }

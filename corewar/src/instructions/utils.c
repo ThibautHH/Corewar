@@ -9,11 +9,11 @@
 
 uint32_t get_direct_value(process_t *process)
 {
-    uint32_t val = 0;
+    uint32_t value = 0;
 
     for (uint8_t i = 0; i < 4; i++)
-        val |= *(process->pc++) << (i * 8);
-    return val;
+        value |= *(process->pc++) << (i * 8);
+    return value;
 }
 
 uint32_t get_indirect_value(vm_t *vm, process_t *process)
@@ -21,12 +21,18 @@ uint32_t get_indirect_value(vm_t *vm, process_t *process)
     int16_t ind_value = 0;
     for (uint8_t i = 0; i < 2; i++)
         ind_value |= *(process->pc++) << (i * 8);
-    ind_value %= IDX_MOD;
 
     uint32_t val = 0;
-    for (uint8_t i = 0; i < 4; i++)
-        val |= *(vm->memory + (\
-        (process->pc - vm->memory + ind_value + i) % MEM_SIZE)) << (i * 8);
+    for (uint8_t i = 0; i < 4; i++) {
+        if (process->pc - vm->memory + ind_value + i < 0)
+            val |= *(vm->memory + (MEM_SIZE + (\
+            (process->pc - vm->memory + ind_value + i\
+            ) % MEM_SIZE))) << (i * 8);
+        else
+            val |= *(vm->memory + (\
+                (process->pc - vm->memory + ind_value + i) % MEM_SIZE)\
+                ) << (i * 8);
+    }
     return val;
 }
 

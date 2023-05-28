@@ -11,7 +11,7 @@
 #include "ice/printf.h"
 #include "ice/output.h"
 
-void execute_instructon(vm_t *vm, champion_t *champ, process_t *process);
+void execute_instruction(vm_t *vm, champion_t *champ, process_t *process);
 void kill_process(vm_t *vm, champion_t *champ, process_t *process);
 
 static const char win_fmt[] = "The player %u(%s)has won.\n";
@@ -60,7 +60,7 @@ void run_vm(vm_t *vm)
     while (vm->nb_champ > 1 && (!vm->dump || vm->cycle != vm->dump_cycle)) {
         TAILQ_FOREACH_SAFE(champ, &vm->champ_list, entries, ctmp)
             TAILQ_FOREACH_SAFE(process, &champ->process_list, entries, ptmp)
-                execute_instructon(vm, champ, process);
+                execute_instruction(vm, champ, process);
         if (++(vm->cycle) == vm->cycle_to_die) {
             trim_champ_list(vm);
             vm->cycle = 0;

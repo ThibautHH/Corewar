@@ -14,7 +14,8 @@ static uint32_t get_value_from_type(vm_t *vm, process_t *process, uint8_t type)
 
     if (type == REG_CODE) {
         reg_number = *(process->pc++);
-        value = PROC_REG(process, reg_number);
+        if (reg_number >= 1 && reg_number <= REG_NUMBER)
+            value = PROC_REG(process, reg_number);
     }
     if (type == DIR_CODE)
         value = get_direct_value(process);
