@@ -24,7 +24,8 @@ static uint32_t get_value_from_type(vm_t *vm, process_t *process, uint8_t type)
     return value;
 }
 
-static void store_result_and_handle_carry(vm_t *vm, process_t *process, uint32_t result)
+static void store_result_and_handle_carry(vm_t *vm,
+    process_t *process, uint32_t result)
 {
     int8_t reg_number = *(NEXT_BYTE);
 
