@@ -6,13 +6,17 @@
 */
 
 #include "corewar/corewar.h"
+#include <stdio.h>
+#include "ice/printf.h"
 
 uint32_t get_direct_value(process_t *process)
 {
-    uint32_t value = 0;
+    u_int32_t value = 0;
+    int8_t reg_number;
 
-    for (uint8_t i = 0; i < 4; i++)
-        value |= *(process->pc++) << (i * 8);
+    reg_number = *(process->pc++);
+    if (reg_number >= 1 && reg_number <= REG_NUMBER)
+        value = PROC_REG(process, reg_number);
     return value;
 }
 
@@ -40,21 +44,31 @@ void load_to_register(process_t *process, uint32_t value)
 {
     int8_t reg_number = *(process->pc++);
 
-    if (reg_number >= 1 && reg_number <= REG_NUMBER) {
+    if (reg_number >= 1 && reg_number <= REG_NUMBER)
         PROC_REG(process, reg_number) = value;
-        process->carry = value == 0 ? 1 : 0;
-    }
+}
+
+uint32_t get_register_value(process_t *process)
+{
+    uint8_t reg_index = *(process->pc++);
+    uint32_t value = 0;
+
+    for (uint8_t i = 0; i < 4; i++)
+        if (reg_index >= 1 && reg_index <= REG_NUMBER)
+            value |= *(process->regs->bytes + (\
+                reg_index * REG_SIZE) + i) << (i * 8);
+    return value;
 }
 
 uint32_t get_arg_value(vm_t *vm, process_t *process, uint8_t arg_type)
 {
     uint32_t value = 0;
 
-    if (arg_type == T_REG)
-        value = PROC_REG(process, *(process->pc++));
-    if (arg_type == T_DIR)
+    if (arg_type == REG_CODE)
+        value = get_register_value(process);
+    if (arg_type == DIR_CODE)
         value = get_direct_value(process);
-    if (arg_type == T_IND)
+    if (arg_type == IND_CODE)
         value = get_indirect_value(vm, process);
     return value;
 }

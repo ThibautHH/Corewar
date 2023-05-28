@@ -14,9 +14,16 @@ static uint32_t get_indirect_value_without_mod(vm_t *vm, process_t *process)
         ind_value |= *(process->pc++) << (i * 8);
 
     uint32_t val = 0;
-    for (uint8_t i = 0; i < 4; i++)
-        val |= *(vm->memory + (\
-            (process->pc - vm->memory + ind_value + i) % MEM_SIZE)) << (i * 8);
+    for (uint8_t i = 0; i < 4; i++) {
+        if (process->pc - vm->memory + ind_value + i < 0)
+            val |= *(vm->memory + (MEM_SIZE + (\
+            (process->pc - vm->memory + ind_value + i\
+            ) % MEM_SIZE))) << (i * 8);
+        else
+            val |= *(vm->memory + (\
+                (process->pc - vm->memory + ind_value + i) % MEM_SIZE)\
+                ) << (i * 8);
+    }
     return val;
 }
 

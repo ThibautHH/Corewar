@@ -105,5 +105,6 @@ uint32_t get_direct_value(process_t *process);
 uint32_t get_indirect_value(vm_t *vm, process_t *process);
 void load_to_register(process_t *process, uint32_t value);
 uint32_t get_arg_value(vm_t *vm, process_t *process, uint8_t arg_type);
+uint32_t get_register_value(process_t *process);
 
 #endif /* !COREWAR_COREWAR_H */
