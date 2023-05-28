@@ -11,7 +11,7 @@
 
 void live(vm_t *vm, UNUSED champion_t *champ, process_t *process)
 {
-    uint32_t player_number = get_direct_value(process);
+    uint32_t player_number = get_direct_value(vm, process);
     champion_t *live_champ;
 
     TAILQ_FOREACH(live_champ, &vm->champ_list, entries) {

@@ -9,12 +9,12 @@
 #include <stdio.h>
 #include "ice/printf.h"
 
-uint32_t get_direct_value(process_t *process)
+uint32_t get_direct_value(vm_t *vm, process_t *process)
 {
     u_int32_t value = 0;
     int8_t reg_number;
 
-    reg_number = *(process->pc++);
+    reg_number = *(NEXT_BYTE);
     if (reg_number >= 1 && reg_number <= REG_NUMBER)
         value = PROC_REG(process, reg_number);
     return value;
@@ -24,7 +24,7 @@ uint32_t get_indirect_value(vm_t *vm, process_t *process)
 {
     int16_t ind_value = 0;
     for (uint8_t i = 0; i < 2; i++)
-        ind_value |= *(process->pc++) << (i * 8);
+        ind_value |= *(NEXT_BYTE) << (i * 8);
 
     uint32_t val = 0;
     for (uint8_t i = 0; i < 4; i++) {
@@ -40,17 +40,17 @@ uint32_t get_indirect_value(vm_t *vm, process_t *process)
     return val;
 }
 
-void load_to_register(process_t *process, uint32_t value)
+void load_to_register(vm_t *vm, process_t *process, uint32_t value)
 {
-    int8_t reg_number = *(process->pc++);
+    int8_t reg_number = *(NEXT_BYTE);
 
     if (reg_number >= 1 && reg_number <= REG_NUMBER)
         PROC_REG(process, reg_number) = value;
 }
 
-uint32_t get_register_value(process_t *process)
+uint32_t get_register_value(vm_t *vm, process_t *process)
 {
-    uint8_t reg_index = *(process->pc++);
+    uint8_t reg_index = *(NEXT_BYTE);
     uint32_t value = 0;
 
     for (uint8_t i = 0; i < 4; i++)
@@ -65,9 +65,9 @@ uint32_t get_arg_value(vm_t *vm, process_t *process, uint8_t arg_type)
     uint32_t value = 0;
 
     if (arg_type == REG_CODE)
-        value = get_register_value(process);
+        value = get_register_value(vm, process);
     if (arg_type == DIR_CODE)
-        value = get_direct_value(process);
+        value = get_direct_value(vm, process);
     if (arg_type == IND_CODE)
         value = get_indirect_value(vm, process);
     return value;

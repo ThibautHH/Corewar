@@ -86,7 +86,7 @@ void execute_instruction(vm_t *vm, champion_t *champ, process_t *process)
     size_t length = op.nbr_args;
     for (uint8_t i = 0; i < op.nbr_args; i++)
         length += get_arg_length(*(process->pc + 1), i);
-    (length == 0) ? process->pc++ : 0;
+    (length == 0) ? NEXT_BYTE : 0;
     if (length == 0) return;
 #if defined(DEBUG)
     instructions_debug(champ, op);

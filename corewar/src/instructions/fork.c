@@ -12,7 +12,7 @@ void fork_op(vm_t *vm, champion_t *champ, process_t *process)
 {
     uint16_t ind_value = 0;
     for (uint8_t i = 0; i < 2; i++)
-        ind_value |= *(process->pc++) << (i * 8);
+        ind_value |= *(NEXT_BYTE) << (i * 8);
     ind_value %= IDX_MOD;
 
     process_t *new_process = malloc(sizeof(process_t));

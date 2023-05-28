@@ -8,12 +8,12 @@
 #include "corewar/corewar.h"
 #include "ice/memory.h"
 
-static int16_t get_direct_value_short(process_t *process)
+static int16_t get_direct_value_short(vm_t *vm, process_t *process)
 {
     int16_t val = 0;
 
     for (uint8_t i = 0; i < 2; i++)
-        val |= *(process->pc++) << (i * 8);
+        val |= *(NEXT_BYTE) << (i * 8);
 
     return val;
 }
@@ -36,7 +36,7 @@ static void add_process(UNUSED vm_t *vm, process_t *process, champion_t *champ)
 
     if (new_process != NULL) {
         ice_memcpy(new_process, process, sizeof(process_t));
-        new_process->pc = process->pc + get_direct_value_short(process);
+        new_process->pc = process->pc + get_direct_value_short(vm, process);
         new_process->carry = process->carry;
         new_process->cycles_left = 0;
         new_process->regs[0] = process->regs[0];
@@ -48,7 +48,7 @@ static void add_process(UNUSED vm_t *vm, process_t *process, champion_t *champ)
 
 void lfork(vm_t *vm, champion_t *champ, process_t *process)
 {
-    int16_t direct_value = get_direct_value_short(process);
+    int16_t direct_value = get_direct_value_short(vm, process);
 
     UNUSED process_t *new_process = clone_process(process, direct_value);
     add_process(vm, process, champ);

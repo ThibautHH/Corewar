@@ -31,6 +31,8 @@
 
     #define PROC_REG(p, n) (*((uint32_t *)(&((p)->regs[(n) - 1]))))
 
+    #define NEXT_BYTE (get_next_byte(vm, process))
+
     #define FIRST_CHAMP (TAILQ_FIRST(&vm->champ_list))
     #define LAST_CHAMP (TAILQ_LAST(&vm->champ_list, champions_s))
 
@@ -98,13 +100,22 @@ static inline void prev_swap(vm_t *vm, champion_t *i, bool *swapped)
     *swapped = 1;
 }
 
+static inline uint8_t *get_next_byte(vm_t *vm, process_t *process)
+{
+    uint8_t *ptr = process->pc++;
+
+    if (process->pc == vm->memory + MEM_SIZE)
+        process->pc = vm->memory;
+    return ptr;
+}
+
 UNUSED static const char *malloc_failed_error =
 "Vm failed to malloc, exiting.\n";
 
-uint32_t get_direct_value(process_t *process);
+uint32_t get_direct_value(vm_t *vm, process_t *process);
 uint32_t get_indirect_value(vm_t *vm, process_t *process);
-void load_to_register(process_t *process, uint32_t value);
+void load_to_register(vm_t *vm, process_t *process, uint32_t value);
 uint32_t get_arg_value(vm_t *vm, process_t *process, uint8_t arg_type);
-uint32_t get_register_value(process_t *process);
+uint32_t get_register_value(vm_t *vm, process_t *process);
 
 #endif /* !COREWAR_COREWAR_H */

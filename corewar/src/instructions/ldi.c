@@ -9,7 +9,7 @@
 
 void ldi(vm_t *vm, UNUSED champion_t *champ, process_t *process)
 {
-    uint8_t args_code = *(process->pc++);
+    uint8_t args_code = *(NEXT_BYTE);
     int32_t first_arg_value = 0;
     int32_t second_arg_value = 0;
 
@@ -24,5 +24,5 @@ void ldi(vm_t *vm, UNUSED champion_t *champ, process_t *process)
     }
 
     if (((args_code >> 2) & 0x3) == REG_CODE)
-        load_to_register(process, value_to_load);
+        load_to_register(vm, process, value_to_load);
 }
