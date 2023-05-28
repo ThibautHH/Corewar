@@ -61,7 +61,7 @@ void run_vm(vm_t *vm)
         TAILQ_FOREACH_SAFE(CHAMP, &vm->champ_list, entries, ctmp)
             TAILQ_FOREACH_SAFE(PROC, &CHAMP->process_list, entries, ptmp)
                 execute_instructon(vm);
-        if (++(vm->cycle) == vm->cycle_to_die) {
+        if (++(vm->cycle) >= vm->cycle_to_die) {
             trim_champ_list(vm);
             vm->cycle = 0;
         }
