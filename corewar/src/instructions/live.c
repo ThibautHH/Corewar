@@ -17,7 +17,7 @@ void live(vm_t *vm, UNUSED champion_t *champ, process_t *process)
     TAILQ_FOREACH(live_champ, &vm->champ_list, entries) {
         if (live_champ->number == player_number) {
             live_champ->alive = true;
-            printf("The player %d(%s) is alive.\n", live_champ->number,
+            ice_printf("The player %d(%s) is alive.\n", live_champ->number,
                 live_champ->name);
             break;
         }
