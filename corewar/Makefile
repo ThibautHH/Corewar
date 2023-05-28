@@ -29,20 +29,20 @@ SRC			+=	$(addprefix $(lastword $(DIR)),\
 
 DIR			+=	$(addprefix $(DIR_SRC), ./instructions/)
 SRC			+=	$(addprefix $(lastword $(DIR)),\
-				add.c			\
+				add_sub.c		\
 				aff.c			\
 				and_or.c		\
 				fork.c			\
+				get_value.c		\
 				ld.c			\
 				ldi.c			\
 				lfork.c			\
 				live.c			\
 				lld.c			\
 				lldi.c			\
+				set_value.c		\
 				st.c			\
 				sti.c			\
-				sub.c			\
-				utils.c			\
 				zjmp.c			\
 				)
 

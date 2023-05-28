@@ -7,22 +7,26 @@
 
 #include "corewar/corewar.h"
 
-void ldi(vm_t *vm, UNUSED champion_t *champ, process_t *process)
+void ldi(vm_t *vm)
 {
-    uint8_t args_code = *(process->pc++);
-    int32_t first_arg_value = 0;
-    int32_t second_arg_value = 0;
+    uint8_t args_code = NEXT_BYTE;
+    int32_t vals[2];
+    ssize_t address = INST - vm->memory;
+    int32_t value;
 
-    first_arg_value = get_arg_value(vm, process, args_code >> 6);
-    second_arg_value = get_arg_value(vm, process, (args_code >> 4) & 0x3);
-
-    int32_t sum = (first_arg_value + second_arg_value) % IDX_MOD;
-    int32_t value_to_load = 0;
-    for (uint8_t i = 0; i < 4; i++) {
-        value_to_load |= *(vm->memory + (\
-            (process->pc - vm->memory + sum + i) % MEM_SIZE)) << (i * 8);
-    }
-
-    if (((args_code >> 2) & 0x3) == REG_CODE)
-        load_to_register(process, value_to_load);
+    if (!(args_code >> 6) || ((args_code >> 4) & 0b11u) == 0b11u
+        || !((args_code >> 4) & 0b11u)
+        || ((args_code >> 2) & 0b11u) != REG_CODE || (args_code & 0b11u))
+        return kill_process(vm);
+    vals[0] = get_value(vm, args_code >> 6, true, false);
+    vals[1] = get_value(vm, (args_code >> 4) & 0b11u, true, false);
+    address += (vals[0] + vals[1]) % IDX_MOD;
+    if (address >= MEM_SIZE)
+        address %= MEM_SIZE;
+    else
+        while (address < 0)
+            address += MEM_SIZE;
+    for (uint8_t i = 0; i < 4; i++)
+        value |= vm->memory[address + i] << (i * 8);
+    set_value(vm, REG_CODE, value, true);
 }

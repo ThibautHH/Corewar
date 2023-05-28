@@ -7,67 +7,44 @@
 
 #include "corewar/corewar.h"
 
-static uint32_t get_value_from_type(vm_t *vm, process_t *process, uint8_t type)
+void and_op(vm_t *vm)
 {
-    uint32_t value = 0;
-    int8_t reg_number;
+    uint8_t args_code = NEXT_BYTE;
+    int32_t vals[2];
 
-    if (type == REG_CODE) {
-        reg_number = *(process->pc++);
-        value = PROC_REG(process, reg_number);
-    }
-    if (type == DIR_CODE)
-        value = get_direct_value(process);
-    if (type == IND_CODE)
-        value = get_indirect_value(vm, process);
-    return value;
+    if (args_code & 0b11u || ((args_code >> 2) & 0b11u) != 0b01u
+        || !((args_code >> 4) & 0b11u) || !(args_code >> 6))
+        return kill_process(vm);
+    for (uint8_t i = 0; i < 2; i++)
+        vals[i] = get_value(vm, (args_code >> (6 - i * 2)) & 0b11u, false,
+            false);
+    set_value(vm, REG_CODE, vals[0] & vals[1], true);
 }
 
-static void store_result_and_handle_carry(process_t *process, uint32_t result)
+void or_op(vm_t *vm)
 {
-    int8_t reg_number = *(process->pc++);
+    uint8_t args_code = NEXT_BYTE;
+    int32_t vals[2];
 
-    if (reg_number >= 1 && reg_number <= REG_NUMBER) {
-        PROC_REG(process, reg_number) = result;
-        process->carry = result == 0 ? 1 : 0;
-    }
+    if (args_code & 0b11u || ((args_code >> 2) & 0b11u) != 0b01u
+        || !((args_code >> 4) & 0b11u) || !(args_code >> 6))
+        return kill_process(vm);
+    for (uint8_t i = 0; i < 2; i++)
+        vals[i] = get_value(vm, (args_code >> (6 - i * 2)) & 0b11u, false,
+            false);
+    set_value(vm, REG_CODE, vals[0] | vals[1], true);
 }
 
-void and_op(vm_t *vm, UNUSED champion_t *champ, process_t *process)
+void xor_op(vm_t *vm)
 {
-    uint8_t args_code = *(process->pc++);
-    uint32_t first_arg_value = get_value_from_type(\
-        vm, process, (args_code >> 6) & 0x3);
-    uint32_t second_arg_value = get_value_from_type(\
-        vm, process, (args_code >> 4) & 0x3);
-    uint32_t result = first_arg_value & second_arg_value;
+    uint8_t args_code = NEXT_BYTE;
+    int32_t vals[2];
 
-    if (((args_code >> 2) & 0x3) == REG_CODE)
-        store_result_and_handle_carry(process, result);
-}
-
-void or_op(vm_t *vm, UNUSED champion_t *champ, process_t *process)
-{
-    uint8_t args_code = *(process->pc++);
-    uint32_t first_arg_value = get_value_from_type(\
-        vm, process, (args_code >> 6) & 0x3);
-    uint32_t second_arg_value = get_value_from_type(\
-        vm, process, (args_code >> 4) & 0x3);
-    uint32_t result = first_arg_value | second_arg_value;
-
-    if (((args_code >> 2) & 0x3) == REG_CODE)
-        store_result_and_handle_carry(process, result);
-}
-
-void xor_op(vm_t *vm, UNUSED champion_t *champ, process_t *process)
-{
-    uint8_t args_code = *(process->pc++);
-    uint32_t first_arg_value = get_value_from_type(\
-        vm, process, (args_code >> 6) & 0x3);
-    uint32_t second_arg_value = get_value_from_type(\
-        vm, process, (args_code >> 4) & 0x3);
-    uint32_t result = first_arg_value ^ second_arg_value;
-
-    if (((args_code >> 2) & 0x3) == REG_CODE)
-        store_result_and_handle_carry(process, result);
+    if (args_code & 0b11u || ((args_code >> 2) & 0b11u) != 0b01u
+        || !((args_code >> 4) & 0b11u) || !(args_code >> 6))
+        return kill_process(vm);
+    for (uint8_t i = 0; i < 2; i++)
+        vals[i] = get_value(vm, (args_code >> (6 - i * 2)) & 0b11u, false,
+            false);
+    set_value(vm, REG_CODE, vals[0] ^ vals[1], true);
 }

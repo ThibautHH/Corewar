@@ -10,7 +10,9 @@
 
     #include "op.h"
     #include <sys/queue.h>
+    #include <sys/types.h>
     #include <stdbool.h>
+    #include <stdint.h>
     #include <stdlib.h>
 
     #define UNUSED __attribute__((unused))
@@ -33,6 +35,12 @@
 
     #define FIRST_CHAMP (TAILQ_FIRST(&vm->champ_list))
     #define LAST_CHAMP (TAILQ_LAST(&vm->champ_list, champions_s))
+
+    #define CHAMP (vm->current_champ)
+    #define PROC (vm->current_process)
+    #define INST (vm->inst_pc)
+
+    #define NEXT_BYTE (get_next_byte(vm))
 
 typedef struct process_s {
     TAILQ_ENTRY(process_s) entries;
@@ -58,6 +66,9 @@ typedef struct champion_s {
 
 typedef struct vm_s {
     TAILQ_HEAD(champions_s, champion_s) champ_list;
+    champion_t *current_champ;
+    process_t *current_process;
+    uint8_t *inst_pc;
     uint8_t memory[MEM_SIZE];
     size_t cycle;
     size_t cycle_to_die;
@@ -68,7 +79,7 @@ typedef struct vm_s {
     size_t dump_cycle;
 } vm_t;
 
-typedef void (*instruction_t)(vm_t *, champion_t *, process_t *);
+typedef void (*instruction_t)(vm_t *);
 
 typedef struct flag_s {
     char *flag;
@@ -98,12 +109,20 @@ static inline void prev_swap(vm_t *vm, champion_t *i, bool *swapped)
     *swapped = 1;
 }
 
-UNUSED static const char *malloc_failed_error =
-"Vm failed to malloc, exiting.\n";
+static inline uint8_t get_next_byte(vm_t *vm)
+{
+    uint8_t byte = *(PROC->pc++);
 
-uint32_t get_direct_value(process_t *process);
-uint32_t get_indirect_value(vm_t *vm, process_t *process);
-void load_to_register(process_t *process, uint32_t value);
-uint32_t get_arg_value(vm_t *vm, process_t *process, uint8_t arg_type);
+    if (PROC->pc == vm->memory + MEM_SIZE)
+        PROC->pc = vm->memory;
+    return byte;
+}
+
+UNUSED static const char *malloc_failed_error =
+    "Vm failed to malloc, exiting.\n";
+
+void kill_process(vm_t *vm);
+void set_value(vm_t *vm, uint8_t type, int32_t value, bool set_carry);
+int32_t get_value(vm_t *vm, uint8_t arg_type, bool is_index, bool long_mode);
 
 #endif /* !COREWAR_COREWAR_H */

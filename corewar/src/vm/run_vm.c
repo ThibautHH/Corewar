@@ -11,8 +11,8 @@
 #include "ice/printf.h"
 #include "ice/output.h"
 
-void execute_instructon(vm_t *vm, champion_t *champ, process_t *process);
-void kill_process(vm_t *vm, champion_t *champ, process_t *process);
+void execute_instructon(vm_t *vm);
+void kill_process(vm_t *vm);
 
 static const char win_fmt[] = "The player %u(%s)has won.\n";
 
@@ -31,15 +31,15 @@ static void dump_memory(vm_t *vm)
 
 static void trim_champ_list(vm_t *vm)
 {
-    champion_t *champ, *ctmp;
-    process_t *process, *ptmp;
+    champion_t *ctmp;
+    process_t *ptmp;
 
-    TAILQ_FOREACH_SAFE(champ, &vm->champ_list, entries, ctmp)
-        if (!champ->alive)
-            TAILQ_FOREACH_SAFE(process, &champ->process_list, entries, ptmp)
-                kill_process(vm, champ, process);
-    TAILQ_FOREACH(champ, &vm->champ_list, entries)
-        champ->alive = false;
+    TAILQ_FOREACH_SAFE(CHAMP, &vm->champ_list, entries, ctmp)
+        if (!CHAMP->alive)
+            TAILQ_FOREACH_SAFE(PROC, &CHAMP->process_list, entries, ptmp)
+                kill_process(vm);
+    TAILQ_FOREACH(CHAMP, &vm->champ_list, entries)
+        CHAMP->alive = false;
 }
 
 static void end_of_game(vm_t *vm)
@@ -54,13 +54,13 @@ static void end_of_game(vm_t *vm)
 
 void run_vm(vm_t *vm)
 {
-    champion_t *champ, *ctmp;
-    process_t *process, *ptmp;
+    champion_t *ctmp;
+    process_t *ptmp;
 
     while (vm->nb_champ > 1 && (!vm->dump || vm->cycle != vm->dump_cycle)) {
-        TAILQ_FOREACH_SAFE(champ, &vm->champ_list, entries, ctmp)
-            TAILQ_FOREACH_SAFE(process, &champ->process_list, entries, ptmp)
-                execute_instructon(vm, champ, process);
+        TAILQ_FOREACH_SAFE(CHAMP, &vm->champ_list, entries, ctmp)
+            TAILQ_FOREACH_SAFE(PROC, &CHAMP->process_list, entries, ptmp)
+                execute_instructon(vm);
         if (++(vm->cycle) == vm->cycle_to_die) {
             trim_champ_list(vm);
             vm->cycle = 0;

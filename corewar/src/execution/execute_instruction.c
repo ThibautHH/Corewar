@@ -10,22 +10,22 @@
 #include "ice/memory.h"
 #include "ice/printf.h"
 
-void live(vm_t *vm, champion_t *champ, process_t *process);
-void ld_op(vm_t *vm, champion_t *champ, process_t *process);
-void st_op(vm_t *vm, champion_t *champ, process_t *process);
-void add(vm_t *vm, champion_t *champ, process_t *process);
-void sub(vm_t *vm, champion_t *champ, process_t *process);
-void and_op(vm_t *vm, champion_t *champ, process_t *process);
-void or_op(vm_t *vm, champion_t *champ, process_t *process);
-void xor_op(vm_t *vm, champion_t *champ, process_t *process);
-void zjmp(vm_t *vm, champion_t *champ, process_t *process);
-void ldi(vm_t *vm, champion_t *champ, process_t *process);
-void sti(vm_t *vm, champion_t *champ, process_t *process);
-void fork_op(vm_t *vm, champion_t *champ, process_t *process);
-void lld(vm_t *vm, champion_t *champ, process_t *process);
-void lldi(vm_t *vm, champion_t *champ, process_t *process);
-void lfork(vm_t *vm, champion_t *champ, process_t *process);
-void aff(vm_t *vm, champion_t *champ, process_t *process);
+void live(vm_t *vm);
+void ld_op(vm_t *vm);
+void st_op(vm_t *vm);
+void add(vm_t *vm);
+void sub(vm_t *vm);
+void and_op(vm_t *vm);
+void or_op(vm_t *vm);
+void xor_op(vm_t *vm);
+void zjmp(vm_t *vm);
+void ldi(vm_t *vm);
+void sti(vm_t *vm);
+void fork_op(vm_t *vm);
+void lld(vm_t *vm);
+void lldi(vm_t *vm);
+void lfork(vm_t *vm);
+void aff(vm_t *vm);
 
 static const instruction_t instructions[OP_TAB_SIZE] = {
     &live,
@@ -46,29 +46,31 @@ static const instruction_t instructions[OP_TAB_SIZE] = {
     &aff
 };
 
-void kill_process(vm_t *vm, champion_t *champ, process_t *process)
+void kill_process(vm_t *vm)
 {
-    TAILQ_REMOVE(&champ->process_list, process, entries);
+    TAILQ_REMOVE(&CHAMP->process_list, PROC, entries);
     vm->nb_process--;
-    free(process);
-    if (TAILQ_EMPTY(&champ->process_list)) {
-        ice_printf("The player %d(%s)has died.\n", champ->number, champ->name);
-        TAILQ_REMOVE(&vm->champ_list, champ, entries);
+    free(PROC);
+    if (TAILQ_EMPTY(&CHAMP->process_list)) {
+        ice_printf("The player %d(%s)has died.\n", CHAMP->number, CHAMP->name);
+        TAILQ_REMOVE(&vm->champ_list, CHAMP, entries);
         vm->nb_champ--;
-        free(champ->code);
-        free(champ);
+        free(CHAMP->code);
+        free(CHAMP);
     }
 }
 
-void execute_instructon(vm_t *vm, champion_t *champ, process_t *process)
+void execute_instructon(vm_t *vm)
 {
-    if (!process->cycles_left) {
-        if (((*process->pc) - 1) >= OP_TAB_SIZE)
-            kill_process(vm, champ, process);
+    if (!PROC->cycles_left) {
+        if (((*PROC->pc) - 1) >= OP_TAB_SIZE)
+            kill_process(vm);
         else
-            process->cycles_left = op_tab[(*process->pc) - 1].nbr_cycles;
+            PROC->cycles_left = op_tab[(*PROC->pc) - 1].nbr_cycles;
         return;
     }
-    if (!(--process->cycles_left))
-        instructions[(*process->pc++) - 1](vm, champ, process);
+    if (!(--PROC->cycles_left)) {
+        INST = PROC->pc;
+        instructions[NEXT_BYTE - 1](vm);
+    }
 }

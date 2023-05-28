@@ -7,13 +7,14 @@
 
 #include "corewar/corewar.h"
 
-void ld_op(vm_t *vm, UNUSED champion_t *champ, process_t *process)
+void ld_op(vm_t *vm)
 {
-    uint8_t args_code = *(process->pc++);
-    uint32_t first_arg_value = ((args_code >> 6) == T_DIR)
-        ? get_direct_value(process)
-        : get_indirect_value(vm, process);
+    uint8_t args_code = *(PROC->pc++);
+    uint32_t value;
 
-    if (((args_code >> 4) & 0x3) == REG_CODE)
-        load_to_register(process, first_arg_value);
+    if (args_code & 0b1111u || ((args_code >> 4) & 0b11u) != 0b01u
+        || !(args_code >> 6) || ((args_code >> 6) & 0b11u) == REG_CODE)
+        return kill_process(vm);
+    value = get_value(vm, (args_code >> 6) & 0b11u, false, false);
+    set_value(vm, REG_CODE, value, true);
 }

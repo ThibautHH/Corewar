@@ -8,9 +8,12 @@
 #include <stdio.h>
 #include "corewar/corewar.h"
 
-void aff(UNUSED vm_t *vm, UNUSED champion_t *champ, process_t *process)
+void aff(vm_t *vm)
 {
-    char c = (char)(PROC_REG(process, (*(++process->pc)) % 256));
+    char c;
 
+    if (NEXT_BYTE != 0b10000000u)
+        return kill_process(vm);
+    c = (char)(PROC_REG(PROC, (*(PROC->pc++)) % 256));
     fwrite(&c, sizeof(char), 1, stdout);
 }

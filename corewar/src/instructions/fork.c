@@ -8,24 +8,21 @@
 #include <stdio.h>
 #include "corewar/corewar.h"
 
-void fork_op(vm_t *vm, champion_t *champ, process_t *process)
+void fork_op(vm_t *vm)
 {
-    uint16_t ind_value = 0;
-    for (uint8_t i = 0; i < 2; i++)
-        ind_value |= *(process->pc++) << (i * 8);
-    ind_value %= IDX_MOD;
+    int32_t offset = get_value(vm, DIR_CODE, true, false);
+    process_t *new_proc = malloc(sizeof(process_t));
 
-    process_t *new_process = malloc(sizeof(process_t));
-    if (!new_process) {
-        fwrite("Malloc error\n", 1, 13, stderr);
+    if (!new_proc)
         exit(84);
-    }
-    new_process->pc = vm->memory + (\
-        process->pc - vm->memory + ind_value) % MEM_SIZE;
-    new_process->carry = process->carry;
-    new_process->cycles_left = 0;
-    new_process->regs[0] = process->regs[0];
-    for (uint8_t i = 1; i < REG_NUMBER; i++)
-        new_process->regs[i] = process->regs[i];
-    TAILQ_INSERT_TAIL(&champ->process_list, new_process, entries);
+    *new_proc = *PROC;
+    new_proc->pc += offset % IDX_MOD;
+    if (new_proc->pc >= vm->memory + MEM_SIZE)
+        do
+            new_proc->pc -= MEM_SIZE;
+        while (new_proc->pc >= vm->memory + MEM_SIZE);
+    else
+        while (new_proc->pc < vm->memory)
+            new_proc->pc += MEM_SIZE;
+    TAILQ_INSERT_HEAD(&CHAMP->process_list, new_proc, entries);
 }

@@ -7,21 +7,26 @@
 
 #include "corewar/corewar.h"
 
-void sti(vm_t *vm, UNUSED champion_t *champ, process_t *process)
+void sti(vm_t *vm)
 {
-    uint8_t args_code = *(process->pc++);
-    int32_t first_arg_value = 0;
-    int32_t second_arg_value = 0;
-    int32_t third_arg_value = 0;
+    uint8_t args_code = NEXT_BYTE;
+    int32_t value;
+    int32_t vals[2];
+    ssize_t address = INST - vm->memory;
 
-    first_arg_value = get_arg_value(vm, process, args_code >> 6);
-    second_arg_value = get_arg_value(vm, process, (args_code >> 4) & 0x3);
-    third_arg_value = get_arg_value(vm, process, (args_code >> 2) & 0x3);
-
-    int32_t sum = (second_arg_value + third_arg_value) % IDX_MOD;
-
-    for (uint8_t i = 0; i < 4; i++) {
-        *(vm->memory + ((process->pc - vm->memory + sum + i) % MEM_SIZE)) = (\
-            first_arg_value >> (i * 8)) & 0xFF;
-    }
+    if (!((args_code >> 2) & 0b11u) || ((args_code >> 2) & 0b11u) == IND_CODE
+        || !((args_code >> 4) & 0b11u)
+        || args_code >> 6 != REG_CODE || (args_code & 0b11u))
+        return kill_process(vm);
+    value = get_value(vm, REG_CODE, true, false);
+    vals[0] = get_value(vm, (args_code >> 4) & 0b11u, true, false);
+    vals[1] = get_value(vm, (args_code >> 2) & 0b11u, true, false);
+    address += (vals[0] + vals[1]) % IDX_MOD;
+    if (address >= MEM_SIZE)
+        address %= MEM_SIZE;
+    else
+        while (address < 0)
+            address += MEM_SIZE;
+    for (uint8_t i = 0; i < 4; i++)
+        vm->memory[address + i] = (value >> (i * 8)) & 0xFFu;
 }

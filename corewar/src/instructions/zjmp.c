@@ -7,16 +7,18 @@
 
 #include "corewar/corewar.h"
 
-void zjmp(vm_t *vm, UNUSED champion_t *champ, process_t *process)
+void zjmp(vm_t *vm)
 {
-    uint8_t args_code = *(process->pc++);
-    int32_t index = 0;
+    int32_t offset = get_value(vm, DIR_CODE, true, false);
 
-    if (process->carry == 1) {
-        if ((args_code >> 6) == DIR_CODE) {
-            index = get_direct_value(process);
-        }
-        process->pc = vm->memory + (\
-            (process->pc - vm->memory + (index % IDX_MOD)) % MEM_SIZE);
-    }
+    if (!PROC->carry)
+        return;
+    PROC->pc += offset % IDX_MOD;
+    if (PROC->pc >= vm->memory + MEM_SIZE)
+        do
+            PROC->pc -= MEM_SIZE;
+        while (PROC->pc >= vm->memory + MEM_SIZE);
+    else
+        while (PROC->pc < vm->memory)
+            PROC->pc += MEM_SIZE;
 }

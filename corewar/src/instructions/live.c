@@ -8,13 +8,14 @@
 #include "corewar/corewar.h"
 #include "ice/printf.h"
 
-void live(vm_t *vm, champion_t *champ, process_t *process)
+void live(vm_t *vm)
 {
     static const char format[] = "The player %d(%s)is alive.\n";
     uint32_t number = 0;
+    champion_t *champ;
 
     for (uint8_t i = 0; i < 4; i++)
-        number |= *(process->pc++) << (i * 8);
+        number |= NEXT_BYTE << (i * 8);
     TAILQ_FOREACH(champ, &vm->champ_list, entries)
         if (champ->number == number) {
             champ->alive = true;
