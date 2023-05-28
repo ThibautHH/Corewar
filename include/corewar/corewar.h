@@ -31,7 +31,7 @@
     #define END16(x) ((x) << 8 | (x) >> 8)
     #define END(x) (_Generic ((x), uint32_t : END32(x), uint16_t : END16(x)))
 
-extern const uint16_t endianness;
+extern const uint16_t endianness SMCLN
 
     #define IS_LE (*((uint8_t *)(&endianness)))
 
